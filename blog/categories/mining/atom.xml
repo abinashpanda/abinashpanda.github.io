@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Mining | Pythonic Musings]]></title>
   <link href="http://abinashpanda.github.io/blog/categories/mining/atom.xml" rel="self"/>
   <link href="http://abinashpanda.github.io/"/>
-  <updated>2013-10-19T00:29:00+05:30</updated>
+  <updated>2013-10-19T00:35:25+05:30</updated>
   <id>http://abinashpanda.github.io/</id>
   <author>
     <name><![CDATA[Abinash Panda]]></name>
@@ -55,10 +55,11 @@ return movie_data
 <p>Going through the code in details. For this simple parser I have used <strong>parse</strong> from <strong>lxml.html</strong>.</p>
 
 <p><code>tree = parse(&lsquo;<a href="http://www.imdb.com/chart/top">http://www.imdb.com/chart/top</a>&rsquo;)</code> parses the <a href="http://www.imdb.com/chart/top">url</a> and returns a tree.<br/>
-Before going on the next line, lets discuss about <strong>XPath</strong>. XPath, the XML Path Language, is a query language for selecting nodes from an XML document. <a href="http://www.w3schools.com/xpath/">XPath Tutorial</a> is a very good tutorial for XPath by w3cschools.com. In the code,
+Before going on the next line, lets discuss about <strong>XPath</strong>. XPath, the XML Path Language, is a query language for selecting nodes from an XML document. <a href="http://www.w3schools.com/xpath/">XPath Tutorial</a> is a very good tutorial for XPath by w3cschools.com. In the XPath,
 <code>&lsquo;//*[@id=&ldquo;main&rdquo;]/table[2]/tr/td[3]/font/a&rsquo;</code></p>
 
-<pre><code>// : Selects nodes in the document from the current node that match the selection no matter where they are.  
+<pre><code>// : Selects nodes in the document from the current node
+     that match the selection no matter where they are.  
 / : Selects from the root node  
 /tr/td[3]: Selects the third td element that is the child of the tr element.   
 </code></pre>
