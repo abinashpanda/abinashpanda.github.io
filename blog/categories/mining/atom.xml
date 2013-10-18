@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[My Octopress Blog]]></title>
-  <link href="http://abinashpanda.github.io/atom.xml" rel="self"/>
+  <title><![CDATA[Category: Mining | My Octopress Blog]]></title>
+  <link href="http://abinashpanda.github.io/blog/categories/mining/atom.xml" rel="self"/>
   <link href="http://abinashpanda.github.io/"/>
   <updated>2013-10-18T23:50:46+05:30</updated>
   <id>http://abinashpanda.github.io/</id>

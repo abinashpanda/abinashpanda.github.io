@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>My Octopress Blog</title>
+  <title>Parsing Data from IMDb - My Octopress Blog</title>
   <meta name="author" content="Your Name">
 
   
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://abinashpanda.github.io">
+  <link rel="canonical" href="http://abinashpanda.github.io/blog/2013/10/18/parsing-data-from-imdb">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
@@ -63,15 +63,12 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/10/18/parsing-data-from-imdb/">Parsing Data From IMDb</a></h1>
+      <h1 class="entry-title">Parsing Data From IMDb</h1>
     
     
       <p class="meta">
@@ -94,7 +91,7 @@
   </header>
 
 
-  <div class="entry-content"><p><a href="http://www.imdb.com">IMDb</a> is an online database of information related to films, television programs and video games. I woulb be going to parse <a href="http://www.imdb.com/chart/top">IMDb Top 250</a> and <a href="http://www.imdb.com/year">IMDb: Years</a> and extract information about the movies ratings, year of release, start casts, directors, etc.</p>
+<div class="entry-content"><p><a href="http://www.imdb.com">IMDb</a> is an online database of information related to films, television programs and video games. I woulb be going to parse <a href="http://www.imdb.com/chart/top">IMDb Top 250</a> and <a href="http://www.imdb.com/year">IMDb: Years</a> and extract information about the movies ratings, year of release, start casts, directors, etc.</p>
 
 <pre><code>
 #!/usr/bin/env python
@@ -162,18 +159,57 @@ mov_dict = {get_movie_data(movies_data[i].itertext())[0]:
 value: year_of_release, moving_rating
 </code></pre>
 </div>
+
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Your Name</span></span>
+
+      
+
+
+
+
+
+
+
+
   
 
 
-    </article>
+<time datetime="2013-10-18T23:44:00+05:30" pubdate data-updated="true">Oct 18<span>th</span>, 2013</time>
+      
+
+<span class="categories">
   
-  <div class="pagination">
+    <a class='category' href='/blog/categories/data/'>Data</a>, <a class='category' href='/blog/categories/lxml/'>LXML,</a>, <a class='category' href='/blog/categories/mining/'>Mining</a>, <a class='category' href='/blog/categories/parsing/'>Parsing,</a>
+  
+</span>
+
+
+    </p>
     
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://abinashpanda.github.io/blog/2013/10/18/parsing-data-from-imdb/" data-via="" data-counturl="http://abinashpanda.github.io/blog/2013/10/18/parsing-data-from-imdb/" >Tweet</a>
+  
+  
+  
 </div>
+
+    
+    <p class="meta">
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
 <aside class="sidebar">
   
     <section>
@@ -193,6 +229,7 @@ value: year_of_release, moving_rating
 
   
 </aside>
+
 
     </div>
   </div>
