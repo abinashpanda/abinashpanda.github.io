@@ -4,7 +4,7 @@
   <title><![CDATA[Category: DataMining | Pythonic Musings]]></title>
   <link href="http://abinashpanda.github.io/blog/categories/datamining/atom.xml" rel="self"/>
   <link href="http://abinashpanda.github.io/"/>
-  <updated>2013-10-19T01:19:16+05:30</updated>
+  <updated>2013-10-19T01:21:38+05:30</updated>
   <id>http://abinashpanda.github.io/</id>
   <author>
     <name><![CDATA[Abinash Panda]]></name>
@@ -14,10 +14,10 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Parsing Data from IMDb]]></title>
-    <link href="http://abinashpanda.github.io/blog/2013/10/18/parsing-data-from-imdb/"/>
+    <title type="html"><![CDATA[Parsing Data from IMDb 'I']]></title>
+    <link href="http://abinashpanda.github.io/blog/2013/10/18/parsing-data-from-imdb-I/"/>
     <updated>2013-10-18T23:44:00+05:30</updated>
-    <id>http://abinashpanda.github.io/blog/2013/10/18/parsing-data-from-imdb</id>
+    <id>http://abinashpanda.github.io/blog/2013/10/18/parsing-data-from-imdb-I</id>
     <content type="html"><![CDATA[<p><a href="http://www.imdb.com">IMDb</a> is an online database of information related to films, television programs and video games. I woulb be going to parse <a href="http://www.imdb.com/chart/top">IMDb Top 250</a> and <a href="http://www.imdb.com/year">IMDb: Years</a> and extract information about the movies ratings, year of release, start casts, directors, etc.</p>
 
 <p>```python main.py</p>
