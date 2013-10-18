@@ -4,7 +4,7 @@
   <title><![CDATA[Category: LXML, | My Octopress Blog]]></title>
   <link href="http://abinashpanda.github.io/blog/categories/lxml/atom.xml" rel="self"/>
   <link href="http://abinashpanda.github.io/"/>
-  <updated>2013-10-19T00:00:37+05:30</updated>
+  <updated>2013-10-19T00:02:08+05:30</updated>
   <id>http://abinashpanda.github.io/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -20,7 +20,7 @@
     <id>http://abinashpanda.github.io/blog/2013/10/18/parsing-data-from-imdb</id>
     <content type="html"><![CDATA[<p><a href="http://www.imdb.com">IMDb</a> is an online database of information related to films, television programs and video games. I woulb be going to parse <a href="http://www.imdb.com/chart/top">IMDb Top 250</a> and <a href="http://www.imdb.com/year">IMDb: Years</a> and extract information about the movies ratings, year of release, start casts, directors, etc.</p>
 
-<p>```python main.py linenos:true</p>
+<p>```python main.py</p>
 
 <h1>!/usr/bin/env python</h1>
 
