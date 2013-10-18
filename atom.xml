@@ -4,7 +4,7 @@
   <title><![CDATA[My Octopress Blog]]></title>
   <link href="http://abinashpanda.github.io/atom.xml" rel="self"/>
   <link href="http://abinashpanda.github.io/"/>
-  <updated>2013-10-19T00:02:08+05:30</updated>
+  <updated>2013-10-19T00:03:21+05:30</updated>
   <id>http://abinashpanda.github.io/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -89,7 +89,7 @@ Similarly you can find the XPath for movies_rating also.</p>
 
 <p>Then in</p>
 
-<figure class='code'><figcaption><span>get_movie_data linenos:true</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>get_movie_data</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>

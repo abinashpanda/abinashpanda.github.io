@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Parsing, | My Octopress Blog]]></title>
   <link href="http://abinashpanda.github.io/blog/categories/parsing/atom.xml" rel="self"/>
   <link href="http://abinashpanda.github.io/"/>
-  <updated>2013-10-19T00:02:08+05:30</updated>
+  <updated>2013-10-19T00:03:21+05:30</updated>
   <id>http://abinashpanda.github.io/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -71,7 +71,7 @@ This would give you the XPath to be used. <strong>Remember to remove &lt;tbody&g
 Similarly you can find the XPath for movies_rating also.</p>
 
 <p>Then in
-```python get_movie_data linenos:true
+```python get_movie_data
 def get_movie_data(iterator):</p>
 
 <pre><code>""" Returns movie_name, year_of_release as movies_data[element].itertext()
