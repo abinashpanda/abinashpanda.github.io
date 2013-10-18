@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Parsing, | My Octopress Blog]]></title>
   <link href="http://abinashpanda.github.io/blog/categories/parsing/atom.xml" rel="self"/>
   <link href="http://abinashpanda.github.io/"/>
-  <updated>2013-10-19T00:03:21+05:30</updated>
+  <updated>2013-10-19T00:07:22+05:30</updated>
   <id>http://abinashpanda.github.io/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -65,7 +65,7 @@ Before going on the next line, lets discuss about <strong>XPath</strong>. XPath,
 
 <p>To get the XPath of an element, you can use Google Chrome.
 Click on <strong>Inspect Element</strong>.
-<img src="http://abinashpanda.github.io/assets/images/screen1.jpg" alt="ScreenShot" />
+<img src="http://abinashpanda.github.io/source/images/screen1.jpg" alt="ScreenShot" />
 Then select <strong>Copy XPath</strong>.
 This would give you the XPath to be used. <strong>Remember to remove &lt;tbody&gt; element from the XPath. and also remove [] from tr as you want to scrape the whole movies list.</strong><br/>
 Similarly you can find the XPath for movies_rating also.</p>
