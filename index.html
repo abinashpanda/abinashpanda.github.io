@@ -96,31 +96,53 @@
 
   <div class="entry-content"><p><a href="http://www.imdb.com">IMDb</a> is an online database of information related to films, television programs and video games. I woulb be going to parse <a href="http://www.imdb.com/chart/top">IMDb Top 250</a> and <a href="http://www.imdb.com/year">IMDb: Years</a> and extract information about the movies ratings, year of release, start casts, directors, etc.</p>
 
-<pre><code>
-#!/usr/bin/env python
-
-from lxml.html import parse
-
-tree = parse('http://www.imdb.com/chart/top')
- 
-movies_data = tree.findall('//*[@id="main"]/table[2]/tr/td[3]/font/a')
-movies_rating = tree.findall('//*[@id="main"]/table[2]/tr/td[2]/font')
-
-# Removing unwanted data
-movies_data.pop(0)
-movies_rating.pop(0)
-
-movies_rating = [float(movie.text) for movie in movies_rating]
-
-
-def get_movie_data(iterator):
-    movie_data = (iterator.next(), iterator.next())
-    return movie_data
-
-mov_dict = {get_movie_data(movies_data[i].itertext())[0]:
-            [int(get_movie_data(movies_data[i].itertext())[1].strip(' ()/I')),
-             movies_rating[i]] for i in range(len(movies_data))}
-</code></pre>
+<figure class='code'><figcaption><span>main.py linenos:true</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/env python</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">from</span> <span class="nn">lxml.html</span> <span class="kn">import</span> <span class="n">parse</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">tree</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="s">&#39;http://www.imdb.com/chart/top&#39;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">movies_data</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s">&#39;//*[@id=&quot;main&quot;]/table[2]/tr/td[3]/font/a&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="n">movies_rating</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s">&#39;//*[@id=&quot;main&quot;]/table[2]/tr/td[2]/font&#39;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Removing unwanted data</span>
+</span><span class='line'><span class="n">movies_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span class='line'><span class="n">movies_rating</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">movies_rating</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">movie</span><span class="o">.</span><span class="n">text</span><span class="p">)</span> <span class="k">for</span> <span class="n">movie</span> <span class="ow">in</span> <span class="n">movies_rating</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">get_movie_data</span><span class="p">(</span><span class="n">iterator</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">movie_data</span> <span class="o">=</span> <span class="p">(</span><span class="n">iterator</span><span class="o">.</span><span class="n">next</span><span class="p">(),</span> <span class="n">iterator</span><span class="o">.</span><span class="n">next</span><span class="p">())</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">movie_data</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">mov_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">get_movie_data</span><span class="p">(</span><span class="n">movies_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">itertext</span><span class="p">())[</span><span class="mi">0</span><span class="p">]:</span>
+</span><span class='line'>            <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">get_movie_data</span><span class="p">(</span><span class="n">movies_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">itertext</span><span class="p">())[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39; ()/I&#39;</span><span class="p">)),</span>
+</span><span class='line'>             <span class="n">movies_rating</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">movies_data</span><span class="p">))}</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>Going through the code in details. For this simple parser I have used <strong>parse</strong> from <strong>lxml.html</strong>.</p>
@@ -143,17 +165,25 @@ Similarly you can find the XPath for movies_rating also.</p>
 
 <p>Then in</p>
 
-<pre><code>
-def get_movie_data(iterator):
-    """ Returns movie_name, year_of_release as movies_data[element].itertext()
-    would return an iterator containing these two elements"""
-    movie_data = (iterator.next(), iterator.next())
-    return movie_data
-
-mov_dict = {get_movie_data(movies_data[i].itertext())[0]:
-            [int(get_movie_data(movies_data[i].itertext())[1].strip(' ()/I')),
-             movies_rating[i]] for i in range(len(movies_data))}
-</code></pre>
+<figure class='code'><figcaption><span>get_movie_data linenos:true</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">get_movie_data</span><span class="p">(</span><span class="n">iterator</span><span class="p">):</span>
+</span><span class='line'>    <span class="sd">&quot;&quot;&quot; Returns movie_name, year_of_release as movies_data[element].itertext()</span>
+</span><span class='line'><span class="sd">    would return an iterator containing these two elements&quot;&quot;&quot;</span>
+</span><span class='line'>    <span class="n">movie_data</span> <span class="o">=</span> <span class="p">(</span><span class="n">iterator</span><span class="o">.</span><span class="n">next</span><span class="p">(),</span> <span class="n">iterator</span><span class="o">.</span><span class="n">next</span><span class="p">())</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">movie_data</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">mov_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">get_movie_data</span><span class="p">(</span><span class="n">movies_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">itertext</span><span class="p">())[</span><span class="mi">0</span><span class="p">]:</span>
+</span><span class='line'>            <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">get_movie_data</span><span class="p">(</span><span class="n">movies_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">itertext</span><span class="p">())[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39; ()/I&#39;</span><span class="p">)),</span>
+</span><span class='line'>             <span class="n">movies_rating</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">movies_data</span><span class="p">))}</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p><strong>mov_dict</strong> is built containing the dictionary with</p>
