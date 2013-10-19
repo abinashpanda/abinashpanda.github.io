@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Pythonic Musings</title>
+  <title>Parsing Data From IMDb 'II' - Pythonic Musings</title>
   <meta name="author" content="Abinash Panda">
 
   
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://abinashpanda.github.io/">
+  <link rel="canonical" href="http://abinashpanda.github.io/blog/2013/10/19/parsing-data-from-imdb-ii/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -74,15 +74,12 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/10/19/parsing-data-from-imdb-ii/">Parsing Data From IMDb &#8216;II&#8217;</a></h1>
+      <h1 class="entry-title">Parsing Data From IMDb 'II'</h1>
     
     
       <p class="meta">
@@ -105,7 +102,7 @@
   </header>
 
 
-  <div class="entry-content"><p>In the <a href="/blog/2013/10/18/parsing-data-from-imdb-I/">previous post</a>, I wrote a simple parser to parse <a href="http://www.imdb.com/chart/top">IMDb Top 250</a>. That was a simple parser that was able to get movie&rsquo;s rating and year. This post is about writing a bit more complex and more powerful crawler. For this crawler, I have taken some concepts from <code>scrapy</code> <em>(imitation is the best form of flattery)</em> and have used <code>lxml</code> for scraping.</p>
+<div class="entry-content"><p>In the <a href="/blog/2013/10/18/parsing-data-from-imdb-I/">previous post</a>, I wrote a simple parser to parse <a href="http://www.imdb.com/chart/top">IMDb Top 250</a>. That was a simple parser that was able to get movie&rsquo;s rating and year. This post is about writing a bit more complex and more powerful crawler. For this crawler, I have taken some concepts from <code>scrapy</code> <em>(imitation is the best form of flattery)</em> and have used <code>lxml</code> for scraping.</p>
 
 <p>I would be scraping the <a href="http://www.imdb.com/year">IMDb: Years</a> page. This page contains the links for pages containing the links for <em>Most Popular Titles Released</em> in that year. In the next blog, I would be using the data scraped (a dictionary <code>{year: [name, rating, genres, director, actors]}</code> for analysing trends in Movies.</p>
 
@@ -396,22 +393,16 @@ The <em>Crawler</em> class has attribute <code>url_list</code> that contains all
 </span></code></pre></td></tr></table></div></figure>
 
 </div>
-  
-  
 
 
-    </article>
-  
-  
-    <article>
+  <footer>
+    <p class="meta">
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/10/18/parsing-data-from-imdb-I/">Parsing Data From IMDb &#8216;I&#8217;</a></h1>
-    
-    
-      <p class="meta">
-        
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Abinash Panda</span></span>
+
+      
 
 
 
@@ -423,124 +414,48 @@ The <em>Crawler</em> class has attribute <code>url_list</code> that contains all
   
 
 
-<time datetime="2013-10-18T23:44:00+05:30" pubdate data-updated="true">Oct 18<span>th</span>, 2013</time>
-        
-      </p>
+<time datetime="2013-10-19T20:57:00+05:30" pubdate data-updated="true">Oct 19<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/datamining/'>DataMining</a>, <a class='category' href='/blog/categories/lxml/'>LXML</a>, <a class='category' href='/blog/categories/parsing/'>Parsing</a>
+  
+</span>
+
+
+    </p>
     
-  </header>
-
-
-  <div class="entry-content"><p><a href="http://www.imdb.com">IMDb</a> is an online database of information related to films, television programs and video games. I woulb be going to parse <a href="http://www.imdb.com/chart/top">IMDb Top 250</a> and <a href="http://www.imdb.com/year">IMDb: Years</a> and extract information about the movies ratings, year of release, start casts, directors, etc.</p>
-
-<figure class='code'><figcaption><span>main.py</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/env python</span>
-</span><span class='line'>
-</span><span class='line'><span class="kn">from</span> <span class="nn">lxml.html</span> <span class="kn">import</span> <span class="n">parse</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">tree</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="s">&#39;http://www.imdb.com/chart/top&#39;</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">movies_data</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s">&#39;//*[@id=&quot;main&quot;]/table[2]/tr/td[3]/font/a&#39;</span><span class="p">)</span>
-</span><span class='line'><span class="n">movies_rating</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s">&#39;//*[@id=&quot;main&quot;]/table[2]/tr/td[2]/font&#39;</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># Removing unwanted data</span>
-</span><span class='line'><span class="n">movies_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-</span><span class='line'><span class="n">movies_rating</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">movies_rating</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">movie</span><span class="o">.</span><span class="n">text</span><span class="p">)</span> <span class="k">for</span> <span class="n">movie</span> <span class="ow">in</span> <span class="n">movies_rating</span><span class="p">]</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">get_movie_data</span><span class="p">(</span><span class="n">iterator</span><span class="p">):</span>
-</span><span class='line'>    <span class="n">movie_data</span> <span class="o">=</span> <span class="p">(</span><span class="n">iterator</span><span class="o">.</span><span class="n">next</span><span class="p">(),</span> <span class="n">iterator</span><span class="o">.</span><span class="n">next</span><span class="p">())</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">movie_data</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">mov_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">get_movie_data</span><span class="p">(</span><span class="n">movies_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">itertext</span><span class="p">())[</span><span class="mi">0</span><span class="p">]:</span>
-</span><span class='line'>            <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">get_movie_data</span><span class="p">(</span><span class="n">movies_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">itertext</span><span class="p">())[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39; ()/I&#39;</span><span class="p">)),</span>
-</span><span class='line'>             <span class="n">movies_rating</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">movies_data</span><span class="p">))}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Going through the code in details. For this simple parser I have used <strong>parse</strong> from <strong>lxml.html</strong>.</p>
-
-<p><code>tree = parse(&lsquo;<a href="http://www.imdb.com/chart/top">http://www.imdb.com/chart/top</a>&rsquo;)</code> parses the <a href="http://www.imdb.com/chart/top">url</a> and returns a tree.<br/>
-Before going on the next line, lets discuss about <strong>XPath</strong>. XPath, the XML Path Language, is a query language for selecting nodes from an XML document. <a href="http://www.w3schools.com/xpath/">XPath Tutorial</a> is a very good tutorial for XPath by w3cschools.com. In the XPath,
-<code>&lsquo;//*[@id=&ldquo;main&rdquo;]/table[2]/tr/td[3]/font/a&rsquo;</code></p>
-
-<pre><code>// : Selects nodes in the document from the current node
-     that match the selection no matter where they are.  
-/ : Selects from the root node  
-/tr/td[3]: Selects the third td element that is the child of the tr element.   
-</code></pre>
-
-<p>To get the XPath of an element, you can use Google Chrome.
-Click on <strong>Inspect Element</strong>.
-<img src="/images/screen1.jpg"><br/>
-Then select <strong>Copy XPath</strong>.
-This would give you the XPath to be used. <strong>Remember to remove &lt;tbody&gt; element from the XPath. and also remove [] from tr as you want to scrape the whole movies list.</strong><br/>
-Similarly you can find the XPath for movies_rating also.</p>
-
-<p>Then in</p>
-
-<figure class='code'><figcaption><span>get_movie_data</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">get_movie_data</span><span class="p">(</span><span class="n">iterator</span><span class="p">):</span>
-</span><span class='line'>    <span class="sd">&quot;&quot;&quot; Returns movie_name, year_of_release as movies_data[element].itertext()</span>
-</span><span class='line'><span class="sd">    would return an iterator containing these two elements&quot;&quot;&quot;</span>
-</span><span class='line'>    <span class="n">movie_data</span> <span class="o">=</span> <span class="p">(</span><span class="n">iterator</span><span class="o">.</span><span class="n">next</span><span class="p">(),</span> <span class="n">iterator</span><span class="o">.</span><span class="n">next</span><span class="p">())</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">movie_data</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">mov_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">get_movie_data</span><span class="p">(</span><span class="n">movies_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">itertext</span><span class="p">())[</span><span class="mi">0</span><span class="p">]:</span>
-</span><span class='line'>            <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">get_movie_data</span><span class="p">(</span><span class="n">movies_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">itertext</span><span class="p">())[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39; ()/I&#39;</span><span class="p">)),</span>
-</span><span class='line'>             <span class="n">movies_rating</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">movies_data</span><span class="p">))}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><strong>mov_dict</strong> is built containing the dictionary with</p>
-
-<pre><code>key: movie_name
-value: year_of_release, moving_rating
-</code></pre>
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://abinashpanda.github.io/blog/2013/10/19/parsing-data-from-imdb-ii/" data-via="" data-counturl="http://abinashpanda.github.io/blog/2013/10/19/parsing-data-from-imdb-ii/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
 </div>
-  
-  
 
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/10/18/parsing-data-from-imdb-I/" title="Previous Post: Parsing Data from IMDb 'I'">&laquo; Parsing Data from IMDb 'I'</a>
+      
+      
+    </p>
+  </footer>
+</article>
 
-    </article>
-  
-  <div class="pagination">
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
+  </section>
+
+</div>
+
 <aside class="sidebar">
   
     <section>
@@ -548,11 +463,11 @@ value: year_of_release, moving_rating
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2013/10/19/parsing-data-from-imdb-ii/">Parsing Data From IMDb &#8216;II&#8217;</a>
+        <a href="/blog/2013/10/19/parsing-data-from-imdb-ii/">Parsing Data From IMDb 'II'</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2013/10/18/parsing-data-from-imdb-I/">Parsing Data from IMDb &#8216;I&#8217;</a>
+        <a href="/blog/2013/10/18/parsing-data-from-imdb-I/">Parsing Data from IMDb 'I'</a>
       </li>
     
   </ul>
@@ -561,7 +476,7 @@ value: year_of_release, moving_rating
 <section>
   <h1>GitHub Repos</h1>
   <ul id="gh_repos">
-    <li class="loading">Status updating&#8230;</li>
+    <li class="loading">Status updating...</li>
   </ul>
   
   <a href="https://github.com/abinashpanda">@abinashpanda</a> on GitHub
@@ -594,6 +509,7 @@ value: year_of_release, moving_rating
   
 </aside>
 
+
     </div>
   </div>
   <footer role="contentinfo"><p>
@@ -608,7 +524,10 @@ value: year_of_release, moving_rating
       var disqus_shortname = 'pythonicmusings';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://abinashpanda.github.io/blog/2013/10/19/parsing-data-from-imdb-ii/';
+        var disqus_url = 'http://abinashpanda.github.io/blog/2013/10/19/parsing-data-from-imdb-ii/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

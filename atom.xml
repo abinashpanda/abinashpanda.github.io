@@ -4,7 +4,7 @@
   <title><![CDATA[Pythonic Musings]]></title>
   <link href="http://abinashpanda.github.io/atom.xml" rel="self"/>
   <link href="http://abinashpanda.github.io/"/>
-  <updated>2013-10-19T01:21:38+05:30</updated>
+  <updated>2013-10-19T22:13:12+05:30</updated>
   <id>http://abinashpanda.github.io/</id>
   <author>
     <name><![CDATA[Abinash Panda]]></name>
@@ -12,6 +12,304 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Parsing Data From IMDb 'II']]></title>
+    <link href="http://abinashpanda.github.io/blog/2013/10/19/parsing-data-from-imdb-ii/"/>
+    <updated>2013-10-19T20:57:00+05:30</updated>
+    <id>http://abinashpanda.github.io/blog/2013/10/19/parsing-data-from-imdb-ii</id>
+    <content type="html"><![CDATA[<p>In the <a href="http://abinashpanda.github.io/blog/2013/10/18/parsing-data-from-imdb-I/">previous post</a>, I wrote a simple parser to parse <a href="http://www.imdb.com/chart/top">IMDb Top 250</a>. That was a simple parser that was able to get movie&rsquo;s rating and year. This post is about writing a bit more complex and more powerful crawler. For this crawler, I have taken some concepts from <code>scrapy</code> <em>(imitation is the best form of flattery)</em> and have used <code>lxml</code> for scraping.</p>
+
+<p>I would be scraping the <a href="http://www.imdb.com/year">IMDb: Years</a> page. This page contains the links for pages containing the links for <em>Most Popular Titles Released</em> in that year. In the next blog, I would be using the data scraped (a dictionary <code>{year: [name, rating, genres, director, actors]}</code> for analysing trends in Movies.</p>
+
+<figure class='code'><figcaption><span>Crawler.py</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">urllib2</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">re</span>
+</span><span class='line'><span class="kn">from</span> <span class="nn">lxml.html</span> <span class="kn">import</span> <span class="n">parse</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">pickle</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">Crawler</span><span class="p">():</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">settings</span><span class="p">):</span>
+</span><span class='line'>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span class='line'><span class="sd">        settings should be a dictionary containing</span>
+</span><span class='line'><span class="sd">        domain:</span>
+</span><span class='line'><span class="sd">        start_url:</span>
+</span><span class='line'>
+</span><span class='line'><span class="sd">        EXAMPLE</span>
+</span><span class='line'><span class="sd">        settings = {&#39;domain&#39;: &#39;http://www.imdb.com&#39;, &#39;start_url&#39;: &#39;/year&#39;}</span>
+</span><span class='line'><span class="sd">        &quot;&quot;&quot;</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">settings</span> <span class="o">=</span> <span class="n">settings</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">rules</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;start_url&#39;</span><span class="p">]:</span> <span class="s">&#39;parse&#39;</span><span class="p">}</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">parsed_urls</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">url_list</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">_get_all_urls</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+</span><span class='line'>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span class='line'><span class="sd">        _get_all_urls returns all the urls in the page</span>
+</span><span class='line'><span class="sd">        &quot;&quot;&quot;</span>
+</span><span class='line'>        <span class="n">tree</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">url_list</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s">&#39;//a&#39;</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">url_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">url</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&#39;href&#39;</span><span class="p">]</span>
+</span><span class='line'>                    <span class="k">if</span> <span class="n">url</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&#39;href&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;http://&#39;</span><span class="p">)</span>
+</span><span class='line'>                    <span class="k">else</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlparse</span><span class="o">.</span><span class="n">urljoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;domain&#39;</span><span class="p">],</span>
+</span><span class='line'>                                                  <span class="n">url</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&#39;href&#39;</span><span class="p">])</span>
+</span><span class='line'>                    <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">url_list</span><span class="p">]</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">url_list</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">set_rules</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rules</span><span class="p">):</span>
+</span><span class='line'>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span class='line'><span class="sd">        set_rules set the rules for crawling</span>
+</span><span class='line'><span class="sd">        rules are dictionary in the form</span>
+</span><span class='line'><span class="sd">        {url_pattern: parsing_function}</span>
+</span><span class='line'>
+</span><span class='line'><span class="sd">        EXAMPLE</span>
+</span><span class='line'><span class="sd">        &gt;&gt;&gt; settings = {&#39;domain&#39;: &#39;http://www.imdb.com&#39;, &#39;start_url&#39;: &#39;/year&#39;}</span>
+</span><span class='line'><span class="sd">        &gt;&gt;&gt; imdb_crawler = Crawler(settings)</span>
+</span><span class='line'><span class="sd">        &gt;&gt;&gt; imdb_crawler.set_rules({&#39;/year/\d+&#39;: &#39;year_parser&#39;,</span>
+</span><span class='line'><span class="sd">        ...                         &#39;/title/\w+&#39;: &#39;movie_parser&#39;})</span>
+</span><span class='line'><span class="sd">        &quot;&quot;&quot;</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">rules</span> <span class="o">=</span> <span class="n">rules</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">_get_crawl_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
+</span><span class='line'>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span class='line'><span class="sd">        _get_crawl_function returns the crawl function to be</span>
+</span><span class='line'><span class="sd">        used for given url pattern</span>
+</span><span class='line'><span class="sd">        &quot;&quot;&quot;</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+</span><span class='line'>            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
+</span><span class='line'>                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">[</span><span class="n">pattern</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+</span><span class='line'>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span class='line'><span class="sd">        parse is the default parser to be called</span>
+</span><span class='line'><span class="sd">        &quot;&quot;&quot;</span>
+</span><span class='line'>        <span class="k">pass</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">start_crawl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span class='line'><span class="sd">        start_crawl is the method that starts calling</span>
+</span><span class='line'><span class="sd">        </span>
+</span><span class='line'><span class="sd">        EXAMPLE</span>
+</span><span class='line'><span class="sd">        &gt;&gt;&gt; foo_crawler = Crawler()</span>
+</span><span class='line'><span class="sd">        &gt;&gt;&gt; foo_crawler.start_crawl()</span>
+</span><span class='line'><span class="sd">        &quot;&quot;&quot;</span>
+</span><span class='line'>        <span class="n">response</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span>
+</span><span class='line'>            <span class="n">urllib2</span><span class="o">.</span><span class="n">urlparse</span><span class="o">.</span><span class="n">urljoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;domain&#39;</span><span class="p">],</span>
+</span><span class='line'>                                     <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;start_url&#39;</span><span class="p">]))</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">url_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_all_urls</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">url_list</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">if</span> <span class="n">url</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsed_urls</span><span class="p">:</span>
+</span><span class='line'>                <span class="n">crawl_function</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_crawl_function</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+</span><span class='line'>                <span class="k">if</span> <span class="n">crawl_function</span><span class="p">:</span>
+</span><span class='line'>                    <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">crawl_function</span><span class="p">)(</span><span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
+</span><span class='line'>                    <span class="bp">self</span><span class="o">.</span><span class="n">parsed_urls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><em>Crawler</em> object have to be initailized with a dictionary <em>settings</em> <code>{&lsquo;domain&rsquo;: domain_of_\page, &lsquo;start_url&rsquo;: start_url_page}</code>
+The <em>Crawler</em> class has attribute <code>url_list</code> that contains all the urls to be parsed and <code>parsed_urls</code> is a list of all the parsed urls.<br/>
+<code>parse(response)</code> is the default parser of the Crawler. More sophisticated or complex parsers can be written for different urls using <code>set_rule</code>. For example:</p>
+
+<figure class='code'><figcaption><span>set_rule</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">settings</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;domain&#39;</span><span class="p">:</span> <span class="s">&#39;http://www.imdb.com&#39;</span><span class="p">,</span> <span class="s">&#39;start_url&#39;</span><span class="p">:</span> <span class="s">&#39;/year&#39;</span><span class="p">}</span>
+</span><span class='line'><span class="n">imdb_crawler</span> <span class="o">=</span> <span class="n">Crawler</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
+</span><span class='line'><span class="c"># year_parser is parser for scraping year pages</span>
+</span><span class='line'><span class="c"># movie_parser is parser for scraping movie pages</span>
+</span><span class='line'><span class="n">imdb_crawler</span><span class="o">.</span><span class="n">set_rules</span><span class="p">({</span><span class="s">&#39;/year/\d+&#39;</span><span class="p">:</span> <span class="s">&#39;year_parser&#39;</span><span class="p">,</span>
+</span><span class='line'>                        <span class="s">&#39;/title/\w+&#39;</span><span class="p">:</span> <span class="s">&#39;movie_parser&#39;</span><span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><em>All the parser should have be an input parameter <code>response</code>.</em></p>
+
+<p>Using the above <code>Crawler</code>, I have implemented <code>IMDbCrawler</code>.</p>
+
+<figure class='code'><figcaption><span>main.py</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">from</span> <span class="nn">Crawler</span> <span class="kn">import</span> <span class="n">Crawler</span>
+</span><span class='line'><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">movie_final_dict</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">IMDbCrawler</span><span class="p">(</span><span class="n">Crawler</span><span class="p">):</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">year_parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">tree</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">year</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;//*[@id=&quot;header&quot;]/h1&#39;</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">print</span> <span class="n">year</span><span class="o">.</span><span class="n">text</span>
+</span><span class='line'>        <span class="n">list_even</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span>
+</span><span class='line'>            <span class="s">&#39;//table//tr[@class=&quot;even detailed&quot;]/td[@class=&quot;title&quot;]/a&#39;</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">list_odd</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span>
+</span><span class='line'>            <span class="s">&#39;//table//tr[@class=&quot;odd detailed&quot;]/td[@class=&quot;title&quot;]/a&#39;</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">movies_list</span> <span class="o">=</span> <span class="n">list_even</span> <span class="o">+</span> <span class="n">list_odd</span>
+</span><span class='line'>        <span class="n">movies_list_url</span> <span class="o">=</span> <span class="p">[</span><span class="n">urllib2</span><span class="o">.</span><span class="n">urlparse</span><span class="o">.</span><span class="n">urljoin</span><span class="p">(</span><span class="s">&#39;http://www.imdb.com&#39;</span><span class="p">,</span>
+</span><span class='line'>                                                    <span class="n">movie</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&#39;href&#39;</span><span class="p">])</span>
+</span><span class='line'>                           <span class="k">for</span> <span class="n">movie</span> <span class="ow">in</span> <span class="n">movies_list</span><span class="p">]</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">movies_list_url</span><span class="p">:</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">url_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">movie_parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">tree</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">name</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;//*[@id=&quot;overview-top&quot;]/h1/span[1]&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+</span><span class='line'>        <span class="k">print</span> <span class="n">name</span>
+</span><span class='line'>        <span class="k">try</span><span class="p">:</span>
+</span><span class='line'>            <span class="n">genres</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s">&#39;//div[@itemprop=&quot;genre&quot;]//a&#39;</span><span class="p">)</span>
+</span><span class='line'>            <span class="n">genres</span> <span class="o">=</span> <span class="p">[</span><span class="n">genre</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">genre</span> <span class="ow">in</span> <span class="n">genres</span><span class="p">]</span>
+</span><span class='line'>            <span class="n">director</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">find</span><span class="p">(</span>
+</span><span class='line'>                <span class="s">&#39;//div[@itemprop=&quot;director&quot;]//span[@itemprop=&quot;name&quot;]&#39;</span><span class="p">)</span>
+</span><span class='line'>            <span class="n">director</span> <span class="o">=</span> <span class="n">director</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+</span><span class='line'>            <span class="n">rating</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;//span[@itemprop=&quot;ratingValue&quot;]&#39;</span><span class="p">)</span>
+</span><span class='line'>            <span class="n">rating</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">rating</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+</span><span class='line'>            <span class="n">actors</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s">&#39;//td[@itemprop=&quot;actor&quot;]//a//span&#39;</span><span class="p">)</span>
+</span><span class='line'>            <span class="n">actors</span> <span class="o">=</span> <span class="p">[</span><span class="n">actor</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">actor</span> <span class="ow">in</span> <span class="n">actors</span><span class="p">]</span>
+</span><span class='line'>            <span class="n">year</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;//*[@id=&quot;overview-top&quot;]/h1/span[2]/a&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+</span><span class='line'>            <span class="n">movie_final_dict</span><span class="p">[</span><span class="n">year</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">name</span><span class="p">,</span> <span class="n">rating</span><span class="p">,</span>
+</span><span class='line'>                                           <span class="n">genres</span><span class="p">,</span> <span class="n">director</span><span class="p">,</span> <span class="n">actors</span><span class="p">])</span>
+</span><span class='line'>        <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">):</span>
+</span><span class='line'>            <span class="k">pass</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">settings</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;domain&#39;</span><span class="p">:</span> <span class="s">&#39;http://www.imdb.com&#39;</span><span class="p">,</span> <span class="s">&#39;start_url&#39;</span><span class="p">:</span> <span class="s">&#39;/year&#39;</span><span class="p">}</span>
+</span><span class='line'><span class="n">imdb_crawler</span> <span class="o">=</span> <span class="n">IMDbCrawler</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
+</span><span class='line'><span class="n">imdb_crawler</span><span class="o">.</span><span class="n">set_rules</span><span class="p">({</span><span class="s">&#39;/year/\d+&#39;</span><span class="p">:</span> <span class="s">&#39;year_parse&#39;</span><span class="p">,</span>
+</span><span class='line'>                        <span class="s">&#39;/title/\w+&#39;</span><span class="p">:</span> <span class="s">&#39;movie_parse&#39;</span><span class="p">})</span>
+</span><span class='line'><span class="n">imdb_crawler</span><span class="o">.</span><span class="n">start_crawl</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Parsing Data from IMDb 'I']]></title>
