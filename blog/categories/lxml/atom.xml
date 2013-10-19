@@ -4,7 +4,7 @@
   <title><![CDATA[Category: LXML | Pythonic Musings]]></title>
   <link href="http://abinashpanda.github.io/blog/categories/lxml/atom.xml" rel="self"/>
   <link href="http://abinashpanda.github.io/"/>
-  <updated>2013-10-19T22:13:12+05:30</updated>
+  <updated>2013-10-19T22:42:05+05:30</updated>
   <id>http://abinashpanda.github.io/</id>
   <author>
     <name><![CDATA[Abinash Panda]]></name>
@@ -25,8 +25,7 @@
 <p>```python Crawler.py
 import urllib2
 import re
-from lxml.html import parse
-import pickle</p>
+from lxml.html import parse</p>
 
 <p>class Crawler():</p>
 

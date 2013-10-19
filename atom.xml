@@ -4,7 +4,7 @@
   <title><![CDATA[Pythonic Musings]]></title>
   <link href="http://abinashpanda.github.io/atom.xml" rel="self"/>
   <link href="http://abinashpanda.github.io/"/>
-  <updated>2013-10-19T22:13:12+05:30</updated>
+  <updated>2013-10-19T22:42:05+05:30</updated>
   <id>http://abinashpanda.github.io/</id>
   <author>
     <name><![CDATA[Abinash Panda]]></name>
@@ -103,11 +103,9 @@
 <span class='line-number'>79</span>
 <span class='line-number'>80</span>
 <span class='line-number'>81</span>
-<span class='line-number'>82</span>
 </pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">urllib2</span>
 </span><span class='line'><span class="kn">import</span> <span class="nn">re</span>
 </span><span class='line'><span class="kn">from</span> <span class="nn">lxml.html</span> <span class="kn">import</span> <span class="n">parse</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">pickle</span>
 </span><span class='line'>
 </span><span class='line'>
 </span><span class='line'><span class="k">class</span> <span class="nc">Crawler</span><span class="p">():</span>
