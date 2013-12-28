@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Parsing Data From IMDb 'II' - Pythonic Musings</title>
+  <title>Building a custom Parser - Pythonic Musings</title>
   <meta name="author" content="Abinash Panda">
 
   
-  <meta name="description" content="In the previous post, I wrote a simple parser to parse IMDb Top 250. That was a simple parser that was able to get movie&rsquo;s rating and year. &hellip;">
+  <meta name="description" content="A Web crawler is an Internet bot that systematically browses the World Wide Web, typically for the purpose of Web indexing. This tutorial is about &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://abinashpanda.github.io/blog/2013/10/19/parsing-data-from-imdb-ii/">
+  <link rel="canonical" href="http://abinashpanda.github.io/blog/2013/12/27/building-a-custom-parser/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -49,7 +49,7 @@
   <header role="banner"><hgroup>
   <h1><a href="/">Pythonic Musings</a></h1>
   
-    <h2>Data Analysis using Python</h2>
+    <h2>Data Analysis and Machine Learning in Python</h2>
   
 </hgroup>
 
@@ -79,7 +79,7 @@
   
   <header>
     
-      <h1 class="entry-title">Parsing Data From IMDb 'II'</h1>
+      <h1 class="entry-title">Building a Custom Parser</h1>
     
     
       <p class="meta">
@@ -95,16 +95,130 @@
   
 
 
-<time datetime="2013-10-19T20:57:00+05:30" pubdate data-updated="true">Oct 19<span>th</span>, 2013</time>
+<time datetime="2013-12-27T10:08:00+05:30" pubdate data-updated="true">Dec 27<span>th</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>In the <a href="/blog/2013/10/18/parsing-data-from-imdb-I/">previous post</a>, I wrote a simple parser to parse <a href="http://www.imdb.com/chart/top">IMDb Top 250</a>. That was a simple parser that was able to get movie&rsquo;s rating and year. This post is about writing a bit more complex and more powerful crawler. For this crawler, I have taken some concepts from <code>scrapy</code> <em>(imitation is the best form of flattery)</em> and have used <code>lxml</code> for scraping.</p>
+<div class="entry-content"><p>A Web crawler is an Internet bot that systematically browses the World Wide Web, typically for the purpose of Web indexing.</p>
 
-<p>I would be scraping the <a href="http://www.imdb.com/year">IMDb: Years</a> page. This page contains the links for pages containing the links for <em>Most Popular Titles Released</em> in that year. In the next blog, I would be using the data scraped (a dictionary <code>{year: [name, rating, genres, director, actors]}</code> for analysing trends in Movies.</p>
+<p>This tutorial is about building your own web crawler &ndash; not the one that can scan the whole internet(like <a href="www.google.com">Google</a>), but one that is able to extract all the links from a given webpage. For this tutorial, I would be extracting information from IMDb.</p>
+
+<p><a href="www.imdb.com">IMDb</a> is an online database of information related to films, television programs and video games. I woulb be going to parse IMDb Top 250 and IMDb: Years and extract information about the movies ratings, year of release, start casts, directors, etc.</p>
+
+<p>First, let&rsquo;s write a simple program (hard-code) to parse <a href="http://www.imdb.com/chart/top">IMDb Top 250</a>.</p>
+
+<figure class='code'><figcaption><span>main.py</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/env python</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">from</span> <span class="nn">lxml.html</span> <span class="kn">import</span> <span class="n">parse</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">tree</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="s">&#39;http://www.imdb.com/chart/top&#39;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">movies_data</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s">&#39;//*[@id=&quot;main&quot;]/table[2]/tr/td[3]/font/a&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="n">movies_rating</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s">&#39;//*[@id=&quot;main&quot;]/table[2]/tr/td[2]/font&#39;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Removing unwanted data</span>
+</span><span class='line'><span class="n">movies_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span class='line'><span class="n">movies_rating</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">movies_rating</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">movie</span><span class="o">.</span><span class="n">text</span><span class="p">)</span> <span class="k">for</span> <span class="n">movie</span> <span class="ow">in</span> <span class="n">movies_rating</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">get_movie_data</span><span class="p">(</span><span class="n">iterator</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">movie_data</span> <span class="o">=</span> <span class="p">(</span><span class="n">iterator</span><span class="o">.</span><span class="n">next</span><span class="p">(),</span> <span class="n">iterator</span><span class="o">.</span><span class="n">next</span><span class="p">())</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">movie_data</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">mov_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">get_movie_data</span><span class="p">(</span><span class="n">movies_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">itertext</span><span class="p">())[</span><span class="mi">0</span><span class="p">]:</span>
+</span><span class='line'>            <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">get_movie_data</span><span class="p">(</span><span class="n">movies_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">itertext</span><span class="p">())[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39; ()/I&#39;</span><span class="p">)),</span>
+</span><span class='line'>             <span class="n">movies_rating</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">movies_data</span><span class="p">))}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Going through the code in details. For this simple parser I have used parse from lxml.html.</p>
+
+<p><code>tree = parse(&lsquo;<a href="http://www.imdb.com/chart/top">http://www.imdb.com/chart/top</a>&rsquo;)</code> parses the url and returns a tree.
+Before going on the next line, lets discuss about XPath. XPath, the XML Path Language, is a query language for selecting nodes from an XML document. <a href="http://www.w3schools.com/xpath/">XPath Tutorial</a> is a very good tutorial for XPath by w3cschools.com. In the XPath, <code>‘//*[@id=“main”]/table[2]/tr/td[3]/font/a’</code>.</p>
+
+<pre>
+    <code>
+// : Selects nodes in the document from the current node
+     that match the selection no matter where they are.  
+/ : Selects from the root node  
+/tr/td[3]: Selects the third td element that is the child of the tr element.   
+    </code>
+</pre>
+
+
+<p>To get the XPath of an element, you can use Google Chrome. Click on <em>Inspect Element</em>.</p>
+
+<p><img src="/images/screen1.jpg"></p>
+
+<p>Then select <em>Copy XPath</em>. This would give you the XPath to be used. <strong>Remember to remove <tbody> element from the XPath. and also remove [] from tr as you want to scrape the whole movies list.</strong>
+Similarly you can find the XPath for movies_rating also.</p>
+
+<p>Then in</p>
+
+<figure class='code'><figcaption><span>get_movie_data</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">get_movie_data</span><span class="p">(</span><span class="n">iterator</span><span class="p">):</span>
+</span><span class='line'>    <span class="sd">&quot;&quot;&quot; Returns movie_name, year_of_release as movies_data[element].itertext()</span>
+</span><span class='line'><span class="sd">    would return an iterator containing these two elements&quot;&quot;&quot;</span>
+</span><span class='line'>    <span class="n">movie_data</span> <span class="o">=</span> <span class="p">(</span><span class="n">iterator</span><span class="o">.</span><span class="n">next</span><span class="p">(),</span> <span class="n">iterator</span><span class="o">.</span><span class="n">next</span><span class="p">())</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">movie_data</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">mov_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">get_movie_data</span><span class="p">(</span><span class="n">movies_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">itertext</span><span class="p">())[</span><span class="mi">0</span><span class="p">]:</span>
+</span><span class='line'>            <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">get_movie_data</span><span class="p">(</span><span class="n">movies_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">itertext</span><span class="p">())[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39; ()/I&#39;</span><span class="p">)),</span>
+</span><span class='line'>             <span class="n">movies_rating</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">movies_data</span><span class="p">))}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><em>movie_dict</em> is built containing the dictionary with</p>
+
+<pre>
+    <code>
+key: movie_name
+value: year_of_release, movie_rating
+    </code>
+</pre>
+
+
+<p>Let&rsquo;s go a step further. After writing a simple (but hard-coded) parser, I am going to write a more generic (yet simple) parser. For this, I have take some concepts from <strong>scrapy</strong> <em>(imitation is the best form of flattery)</em> and have used <em>lxml</em> for scrapping.</p>
+
+<p>I would be scraping the <a href="http://www.imdb.com/year">IMDb: Years page</a>. This page contains the links for pages containing the links for Most Popular Titles Released in that year. In the next blog, I would be using the data scraped (a dictionary <code>{year: [name, rating, genres, director, actors]}</code> for analysing trends in Movies.</p>
 
 <figure class='code'><figcaption><span>Crawler.py</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -271,8 +385,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p><em>Crawler</em> object have to be initailized with a dictionary <em>settings</em> <code>{&lsquo;domain&rsquo;: domain_of_\page, &lsquo;start_url&rsquo;: start_url_page}</code>
-The <em>Crawler</em> class has attribute <em>url_list</em> that contains all the urls to be parsed and <em>parsed_urls</em> is a list of all the parsed urls.</p>
+<p>Crawler object have to be initailized with a dictionary settings <code>{‘domain’: domain_of_\page, ‘start_url’: start_url_page}</code> The <em>Crawler</em> class has attribute url_list that contains all the urls to be parsed and parsed_urls is a list of all the parsed urls.</p>
 
 <figure class='code'><figcaption><span>_get_all_urls</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -301,11 +414,13 @@ The <em>Crawler</em> class has attribute <em>url_list</em> that contains all the
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p><code>_get_all_urls</code> retrieves all the <em>urls</em> present in the web page. <code>tree.findall(&lsquo;//a&rsquo;)</code> would return all the <em>//a</em> tags present in the web page. If the url starts with <a href="http://">http://</a> then it would append it as usual; but if the url is a relative url, it would append the final url formed by joining the url with the domain</p>
+<p><code>_get_all_urls</code> retrieves all the urls present in the web page. <code>tree.findall(‘//a’)</code> would return all the //a tags present in the web page. If the url starts with <a href="http://">http://</a> then it would append it as usual; but if the url is a relative url, it would append the final url formed by joining the url with the domain</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">urllib2</span><span class="o">.</span><span class="n">urlparse</span><span class="o">.</span><span class="n">urljoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;domain&#39;</span><span class="p">],</span> <span class="n">url</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&#39;href&#39;</span><span class="p">]</span>
-</span></code></pre></td></tr></table></div></figure>
+<pre>
+    <code>
+urllib2.urlparse.urljoin(self.settings['domain'], url.attrib['href']
+    </code>
+</pre>
 
 
 <p><code>parse(response)</code> is the default parser of the Crawler. More sophisticated or complex parsers can be written for different urls using <code>set_rule</code>. For example:</p>
@@ -325,7 +440,7 @@ The <em>Crawler</em> class has attribute <em>url_list</em> that contains all the
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p><em>All the parser should have be an input parameter <code>response</code>.</em> Discussed below in details.</p>
+<p>All the parser should have be an input parameter <code>response</code>. Discussed below in details.</p>
 
 <figure class='code'><figcaption><span>start_crawl</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -368,7 +483,7 @@ The <em>Crawler</em> class has attribute <em>url_list</em> that contains all the
 
 <p><code>start_crawl</code> is the main function that initiates crawling. First, it tries to get all the <em>urls</em> present in the start_page. It then searches the parser to be called for that particular url using <code>_get_crawl_function</code>.</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -521,7 +636,7 @@ The <em>Crawler</em> class has attribute <em>url_list</em> that contains all the
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p><code>year_parser</code> would crawl <em>year pages</em> and append the <em>movie pages</em> into <code>url_list</code>. <em>XPath</em> for extracting <em>movie url</em> and <em>year name</em> is discussed <a href="/blog/2013/10/18/parsing-data-from-imdb-I/">here</a>.</p>
+<p><code>year_parser</code> would crawl year pages and append the movie pages into url_list. XPath for extracting movie url and year name is discussed above.</p>
 
 <figure class='code'><figcaption><span>movie_parser</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -564,9 +679,9 @@ The <em>Crawler</em> class has attribute <em>url_list</em> that contains all the
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p><code>movie_parser</code> would crawl the movie web page and add the details of the movies such as its <em>ratings, director, genres</em> in the dictionary <em>movie_final_dict</em>. There are some movies where data (rating, actors, etc.) is missing, so I have included <em>try</em> and <em>except</em> statements.</p>
+<p><code>movie_parser</code> would crawl the movie web page and add the details of the movies such as its <em>ratings, director, genres</em> in the dictionary <em>movie_final_dict</em>. There are some movies where data (rating, actors, etc.) is missing, so I have included try and except statements.</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -579,8 +694,7 @@ The <em>Crawler</em> class has attribute <em>url_list</em> that contains all the
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p><code>imdb_crawler</code> is an instance of <em>IMDbCrawler</em>. It has been instantiated with the <em>domain</em> <a href="http://www.imdb.com">http://www.imdb.com</a> and <em>start_url</em> /year. Then the rules are set for different urls. It would call <em>year_parser</em> for all the webpages in the format of <a href="http://www.imdb.com/year/1992">http://www.imdb.com/year/1992</a> and
-<em>movie_parser</em> for webpages in the format of <a href="http://www.imdb.com/title/tt0477348/.">http://www.imdb.com/title/tt0477348/.</a></p>
+<p><code>imdb_crawler</code> is an instance of <em>IMDbCrawler</em>. It has been instantiated with the domain <a href="http://www.imdb.com">http://www.imdb.com</a> and start_url /year. Then the rules are set for different urls. It would call year_parser for all the webpages in the format of <a href="http://www.imdb.com/year/1992">http://www.imdb.com/year/1992</a> and movie_parser for webpages in the format of <a href="http://www.imdb.com/title/tt0477348/.">http://www.imdb.com/title/tt0477348/.</a></p>
 </div>
 
 
@@ -603,12 +717,12 @@ The <em>Crawler</em> class has attribute <em>url_list</em> that contains all the
   
 
 
-<time datetime="2013-10-19T20:57:00+05:30" pubdate data-updated="true">Oct 19<span>th</span>, 2013</time>
+<time datetime="2013-12-27T10:08:00+05:30" pubdate data-updated="true">Dec 27<span>th</span>, 2013</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/datamining/'>DataMining</a>, <a class='category' href='/blog/categories/lxml/'>LXML</a>, <a class='category' href='/blog/categories/parsing/'>Parsing</a>
+    <a class='category' href='/blog/categories/datamining/'>DataMining,</a>, <a class='category' href='/blog/categories/lxml/'>LXML</a>, <a class='category' href='/blog/categories/parsing/'>Parsing,</a>
   
 </span>
 
@@ -617,7 +731,7 @@ The <em>Crawler</em> class has attribute <em>url_list</em> that contains all the
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://abinashpanda.github.io/blog/2013/10/19/parsing-data-from-imdb-ii/" data-via="" data-counturl="http://abinashpanda.github.io/blog/2013/10/19/parsing-data-from-imdb-ii/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://abinashpanda.github.io/blog/2013/12/27/building-a-custom-parser/" data-via="" data-counturl="http://abinashpanda.github.io/blog/2013/12/27/building-a-custom-parser/" >Tweet</a>
   
   
   <div class="g-plusone" data-size="medium"></div>
@@ -629,8 +743,6 @@ The <em>Crawler</em> class has attribute <em>url_list</em> that contains all the
 
     
     <p class="meta">
-      
-        <a class="basic-alignment left" href="/blog/2013/10/18/parsing-data-from-imdb-I/" title="Previous Post: Parsing Data from IMDb 'I'">&laquo; Parsing Data from IMDb 'I'</a>
       
       
     </p>
@@ -652,11 +764,7 @@ The <em>Crawler</em> class has attribute <em>url_list</em> that contains all the
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2013/10/19/parsing-data-from-imdb-ii/">Parsing Data From IMDb 'II'</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/10/18/parsing-data-from-imdb-I/">Parsing Data from IMDb 'I'</a>
+        <a href="/blog/2013/12/27/building-a-custom-parser/">Building a custom Parser</a>
       </li>
     
   </ul>
@@ -714,8 +822,8 @@ The <em>Crawler</em> class has attribute <em>url_list</em> that contains all the
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://abinashpanda.github.io/blog/2013/10/19/parsing-data-from-imdb-ii/';
-        var disqus_url = 'http://abinashpanda.github.io/blog/2013/10/19/parsing-data-from-imdb-ii/';
+        var disqus_identifier = 'http://abinashpanda.github.io/blog/2013/12/27/building-a-custom-parser/';
+        var disqus_url = 'http://abinashpanda.github.io/blog/2013/12/27/building-a-custom-parser/';
         var disqus_script = 'embed.js';
       
     (function () {

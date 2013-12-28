@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Parsing | Pythonic Musings]]></title>
+  <title><![CDATA[Category: Parsing, | Pythonic Musings]]></title>
   <link href="http://abinashpanda.github.io/blog/categories/parsing/atom.xml" rel="self"/>
   <link href="http://abinashpanda.github.io/"/>
-  <updated>2013-10-19T23:33:33+05:30</updated>
+  <updated>2013-12-28T12:23:05+05:30</updated>
   <id>http://abinashpanda.github.io/</id>
   <author>
     <name><![CDATA[Abinash Panda]]></name>
@@ -14,13 +14,103 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Parsing Data From IMDb 'II']]></title>
-    <link href="http://abinashpanda.github.io/blog/2013/10/19/parsing-data-from-imdb-ii/"/>
-    <updated>2013-10-19T20:57:00+05:30</updated>
-    <id>http://abinashpanda.github.io/blog/2013/10/19/parsing-data-from-imdb-ii</id>
-    <content type="html"><![CDATA[<p>In the <a href="/blog/2013/10/18/parsing-data-from-imdb-I/">previous post</a>, I wrote a simple parser to parse <a href="http://www.imdb.com/chart/top">IMDb Top 250</a>. That was a simple parser that was able to get movie&rsquo;s rating and year. This post is about writing a bit more complex and more powerful crawler. For this crawler, I have taken some concepts from <code>scrapy</code> <em>(imitation is the best form of flattery)</em> and have used <code>lxml</code> for scraping.</p>
+    <title type="html"><![CDATA[Building a custom Parser]]></title>
+    <link href="http://abinashpanda.github.io/blog/2013/12/27/building-a-custom-parser/"/>
+    <updated>2013-12-27T10:08:00+05:30</updated>
+    <id>http://abinashpanda.github.io/blog/2013/12/27/building-a-custom-parser</id>
+    <content type="html"><![CDATA[<p>A Web crawler is an Internet bot that systematically browses the World Wide Web, typically for the purpose of Web indexing.</p>
 
-<p>I would be scraping the <a href="http://www.imdb.com/year">IMDb: Years</a> page. This page contains the links for pages containing the links for <em>Most Popular Titles Released</em> in that year. In the next blog, I would be using the data scraped (a dictionary <code>{year: [name, rating, genres, director, actors]}</code> for analysing trends in Movies.</p>
+<p>This tutorial is about building your own web crawler &ndash; not the one that can scan the whole internet(like <a href="www.google.com">Google</a>), but one that is able to extract all the links from a given webpage. For this tutorial, I would be extracting information from IMDb.</p>
+
+<p><a href="www.imdb.com">IMDb</a> is an online database of information related to films, television programs and video games. I woulb be going to parse IMDb Top 250 and IMDb: Years and extract information about the movies ratings, year of release, start casts, directors, etc.</p>
+
+<p>First, let&rsquo;s write a simple program (hard-code) to parse <a href="http://www.imdb.com/chart/top">IMDb Top 250</a>.</p>
+
+<p>```python main.py</p>
+
+<h1>!/usr/bin/env python</h1>
+
+<p>from lxml.html import parse</p>
+
+<p>tree = parse(&lsquo;<a href="http://www.imdb.com/chart/top">http://www.imdb.com/chart/top</a>&rsquo;)</p>
+
+<p>movies_data = tree.findall(&lsquo;//<em>[@id=&ldquo;main&rdquo;]/table[2]/tr/td[3]/font/a&rsquo;)
+movies_rating = tree.findall(&lsquo;//</em>[@id=&ldquo;main&rdquo;]/table[2]/tr/td[2]/font&rsquo;)</p>
+
+<h1>Removing unwanted data</h1>
+
+<p>movies_data.pop(0)
+movies_rating.pop(0)</p>
+
+<p>movies_rating = [float(movie.text) for movie in movies_rating]</p>
+
+<p>def get_movie_data(iterator):</p>
+
+<pre><code>movie_data = (iterator.next(), iterator.next())
+return movie_data
+</code></pre>
+
+<p>mov_dict = {get_movie_data(movies_data[i].itertext())[0]:</p>
+
+<pre><code>        [int(get_movie_data(movies_data[i].itertext())[1].strip(' ()/I')),
+         movies_rating[i]] for i in range(len(movies_data))}
+</code></pre>
+
+<p>```</p>
+
+<p>Going through the code in details. For this simple parser I have used parse from lxml.html.</p>
+
+<p><code>tree = parse(&lsquo;<a href="http://www.imdb.com/chart/top">http://www.imdb.com/chart/top</a>&rsquo;)</code> parses the url and returns a tree.
+Before going on the next line, lets discuss about XPath. XPath, the XML Path Language, is a query language for selecting nodes from an XML document. <a href="http://www.w3schools.com/xpath/">XPath Tutorial</a> is a very good tutorial for XPath by w3cschools.com. In the XPath, <code>‘//*[@id=“main”]/table[2]/tr/td[3]/font/a’</code>.</p>
+
+<pre>
+    <code>
+// : Selects nodes in the document from the current node
+     that match the selection no matter where they are.  
+/ : Selects from the root node  
+/tr/td[3]: Selects the third td element that is the child of the tr element.   
+    </code>
+</pre>
+
+
+<p>To get the XPath of an element, you can use Google Chrome. Click on <em>Inspect Element</em>.</p>
+
+<p><img src="/images/screen1.jpg"></p>
+
+<p>Then select <em>Copy XPath</em>. This would give you the XPath to be used. <strong>Remember to remove <tbody> element from the XPath. and also remove [] from tr as you want to scrape the whole movies list.</strong>
+Similarly you can find the XPath for movies_rating also.</p>
+
+<p>Then in</p>
+
+<p>``` python get_movie_data
+def get_movie_data(iterator):</p>
+
+<pre><code>""" Returns movie_name, year_of_release as movies_data[element].itertext()
+would return an iterator containing these two elements"""
+movie_data = (iterator.next(), iterator.next())
+return movie_data
+</code></pre>
+
+<p>mov_dict = {get_movie_data(movies_data[i].itertext())[0]:</p>
+
+<pre><code>        [int(get_movie_data(movies_data[i].itertext())[1].strip(' ()/I')),
+         movies_rating[i]] for i in range(len(movies_data))}
+</code></pre>
+
+<p>```
+<em>movie_dict</em> is built containing the dictionary with</p>
+
+<pre>
+    <code>
+key: movie_name
+value: year_of_release, movie_rating
+    </code>
+</pre>
+
+
+<p>Let&rsquo;s go a step further. After writing a simple (but hard-coded) parser, I am going to write a more generic (yet simple) parser. For this, I have take some concepts from <strong>scrapy</strong> <em>(imitation is the best form of flattery)</em> and have used <em>lxml</em> for scrapping.</p>
+
+<p>I would be scraping the <a href="http://www.imdb.com/year">IMDb: Years page</a>. This page contains the links for pages containing the links for Most Popular Titles Released in that year. In the next blog, I would be using the data scraped (a dictionary <code>{year: [name, rating, genres, director, actors]}</code> for analysing trends in Movies.</p>
 
 <p>```python Crawler.py
 import urllib2
@@ -105,10 +195,10 @@ def start_crawl(self):
                 self.parsed_urls.append(url)
 </code></pre>
 
-<p><code>
-*Crawler* object have to be initailized with a dictionary *settings* &lt;code&gt;{'domain': domain\_of_\page, 'start\_url': start\_url\_page}&lt;/code&gt;
-The *Crawler* class has attribute *url_list* that contains all the urls to be parsed and *parsed\_urls* is a list of all the parsed urls.
-</code>python <em>get_all_urls
+<p>```
+Crawler object have to be initailized with a dictionary settings <code>{‘domain’: domain_of_\page, ‘start_url’: start_url_page}</code> The <em>Crawler</em> class has attribute url_list that contains all the urls to be parsed and parsed_urls is a list of all the parsed urls.</p>
+
+<p>```python <em>get_all_urls
 def </em>get_all_urls(self, response):</p>
 
 <pre><code>"""
@@ -121,14 +211,21 @@ url_list = [url.attrib['href']
             else urllib2.urlparse.urljoin(self.settings['domain'],
                                           url.attrib['href'])
             for url in url_list]
-return url_list  
+return url_list
 </code></pre>
 
-<p>```
-<code>_get_all_urls</code> retrieves all the <em>urls</em> present in the web page. <code>tree.findall(&lsquo;//a&rsquo;)</code> would return all the <em>//a</em> tags present in the web page. If the url starts with <a href="http://">http://</a> then it would append it as usual; but if the url is a relative url, it would append the final url formed by joining the url with the domain <div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">urllib2</span><span class="o">.</span><span class="n">urlparse</span><span class="o">.</span><span class="n">urljoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="o">&amp;</span><span class="n">lsquo</span><span class="p">;</span><span class="n">domain</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="p">;],</span> <span class="n">url</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="o">&amp;</span><span class="n">lsquo</span><span class="p">;</span><span class="n">href</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="p">;]</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-<code>parse(response)</code> is the default parser of the Crawler. More sophisticated or complex parsers can be written for different urls using <code>set_rule</code>. For example:</p>
+<p>```</p>
+
+<p><code>_get_all_urls</code> retrieves all the urls present in the web page. <code>tree.findall(‘//a’)</code> would return all the //a tags present in the web page. If the url starts with <a href="http://">http://</a> then it would append it as usual; but if the url is a relative url, it would append the final url formed by joining the url with the domain</p>
+
+<pre>
+    <code>
+urllib2.urlparse.urljoin(self.settings['domain'], url.attrib['href']
+    </code>
+</pre>
+
+
+<p><code>parse(response)</code> is the default parser of the Crawler. More sophisticated or complex parsers can be written for different urls using <code>set_rule</code>. For example:</p>
 
 <p>```python set_rule
 settings = {&lsquo;domain&rsquo;: &lsquo;<a href="http://www.imdb.com">http://www.imdb.com</a>&rsquo;, &lsquo;start_url&rsquo;: &lsquo;/year&rsquo;}
@@ -144,7 +241,7 @@ imdb_crawler = Crawler(settings)</p>
 </code></pre>
 
 <p>```
-<em>All the parser should have be an input parameter <code>response</code>.</em> Discussed below in details.</p>
+All the parser should have be an input parameter <code>response</code>. Discussed below in details.</p>
 
 <p>```python start_crawl
 def start_crawl(self):</p>
@@ -168,37 +265,29 @@ for url in self.url_list:
             self.parsed_urls.append(url)
 </code></pre>
 
-<p>```
-<code>start_crawl</code> is the main function that initiates crawling. First, it tries to get all the <em>urls</em> present in the start_page. It then searches the parser to be called for that particular url using <code>_get_crawl_function</code>.
-<div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">_get_crawl_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="s">&quot;&quot;&quot;</span>
-</span><span class='line'><span class="s">_get_crawl_function returns the crawl function to be</span>
-</span><span class='line'><span class="s">used for given url pattern</span>
-</span><span class='line'><span class="s">&quot;&quot;&quot;</span>
-</span><span class='line'><span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-</span><span class='line'>    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">[</span><span class="n">pattern</span><span class="p">]</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-The particular parser is then called according to rules set above. Finally the url is appended into <em>parsed_urls</em> list.</p>
+<p>```</p>
 
-<p>Using the above <code>Crawler</code>, I have implemented <code>IMDbCrawler</code>.
-```python main.py
+<p><code>start_crawl</code> is the main function that initiates crawling. First, it tries to get all the <em>urls</em> present in the start_page. It then searches the parser to be called for that particular url using <code>_get_crawl_function</code>.</p>
+
+<p>```python
+def _get_crawl_function(self, url):</p>
+
+<pre><code>"""
+_get_crawl_function returns the crawl function to be
+used for given url pattern
+"""
+for pattern in self.rules.keys():
+    if re.search(pattern, url):
+        return self.rules[pattern]
+</code></pre>
+
+<p>```</p>
+
+<p>The particular parser is then called according to rules set above. Finally the url is appended into <em>parsed_urls</em> list.</p>
+
+<p>Using the above <code>Crawler</code>, I have implemented <code>IMDbCrawler</code>.</p>
+
+<p>```python main.py
 from Crawler import Crawler
 from collections import defaultdict</p>
 
@@ -272,9 +361,10 @@ for url in movies_list_url:
     self.url_list.append(url)
 </code></pre>
 
-<p><code>
-&lt;code&gt;year_parser&lt;/code&gt; would crawl *year pages* and append the *movie pages* into &lt;code&gt;url\_list&lt;/code&gt;. *XPath* for extracting *movie url* and *year name* is discussed [here](/blog/2013/10/18/parsing-data-from-imdb-I/).
-</code>python movie_parser
+<p>```
+<code>year_parser</code> would crawl year pages and append the movie pages into url_list. XPath for extracting movie url and year name is discussed above.</p>
+
+<p>```python movie_parser
 def movie_parser(self, response):</p>
 
 <pre><code>tree = parse(response)
@@ -298,109 +388,19 @@ except (AttributeError, IndexError):
 </code></pre>
 
 <p>```
-<code>movie_parser</code> would crawl the movie web page and add the details of the movies such as its <em>ratings, director, genres</em> in the dictionary <em>movie_final_dict</em>. There are some movies where data (rating, actors, etc.) is missing, so I have included <em>try</em> and <em>except</em> statements.
-<div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">settings</span> <span class="o">=</span> <span class="p">{</span><span class="o">&amp;</span><span class="n">lsquo</span><span class="p">;</span><span class="n">domain</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="p">;:</span> <span class="o">&amp;</span><span class="n">lsquo</span><span class="p">;</span><span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;http://www.imdb.com&quot;</span><span class="o">&gt;</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">imdb</span><span class="o">.</span><span class="n">com</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;&amp;</span><span class="n">rsquo</span><span class="p">;,</span> <span class="o">&amp;</span><span class="n">lsquo</span><span class="p">;</span><span class="n">start_url</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="p">;:</span> <span class="o">&amp;</span><span class="n">lsquo</span><span class="p">;</span><span class="o">/</span><span class="n">year</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="p">;}</span>
-</span><span class='line'><span class="n">imdb_crawler</span> <span class="o">=</span> <span class="n">IMDbCrawler</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
-</span><span class='line'><span class="n">imdb_crawler</span><span class="o">.</span><span class="n">set_rules</span><span class="p">({</span><span class="o">&amp;</span><span class="n">lsquo</span><span class="p">;</span><span class="o">/</span><span class="n">year</span><span class="o">/</span>\<span class="n">d</span><span class="o">+&amp;</span><span class="n">rsquo</span><span class="p">;:</span> <span class="o">&amp;</span><span class="n">lsquo</span><span class="p">;</span><span class="n">year_parser</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="p">;,</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span>                    <span class="s">&#39;/title/\w+&#39;</span><span class="p">:</span> <span class="s">&#39;movie_parser&#39;</span><span class="p">})</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">imdb_crawler</span><span class="o">.</span><span class="n">start_crawl</span><span class="p">()</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-<code>imdb_crawler</code> is an instance of <em>IMDbCrawler</em>. It has been instantiated with the <em>domain</em> <a href="http://www.imdb.com">http://www.imdb.com</a> and <em>start_url</em> /year. Then the rules are set for different urls. It would call <em>year_parser</em> for all the webpages in the format of <a href="http://www.imdb.com/year/1992">http://www.imdb.com/year/1992</a> and
-<em>movie_parser</em> for webpages in the format of <a href="http://www.imdb.com/title/tt0477348/.">http://www.imdb.com/title/tt0477348/.</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Parsing Data from IMDb 'I']]></title>
-    <link href="http://abinashpanda.github.io/blog/2013/10/18/parsing-data-from-imdb-I/"/>
-    <updated>2013-10-18T23:44:00+05:30</updated>
-    <id>http://abinashpanda.github.io/blog/2013/10/18/parsing-data-from-imdb-I</id>
-    <content type="html"><![CDATA[<p><a href="http://www.imdb.com">IMDb</a> is an online database of information related to films, television programs and video games. I woulb be going to parse <a href="http://www.imdb.com/chart/top">IMDb Top 250</a> and <a href="http://www.imdb.com/year">IMDb: Years</a> and extract information about the movies ratings, year of release, start casts, directors, etc.</p>
+<code>movie_parser</code> would crawl the movie web page and add the details of the movies such as its <em>ratings, director, genres</em> in the dictionary <em>movie_final_dict</em>. There are some movies where data (rating, actors, etc.) is missing, so I have included try and except statements.</p>
 
-<p>```python main.py</p>
+<p>```python
+settings = {&lsquo;domain&rsquo;: &lsquo;<a href="http://www.imdb.com">http://www.imdb.com</a>&rsquo;, &lsquo;start_url&rsquo;: &lsquo;/year&rsquo;}
+imdb_crawler = IMDbCrawler(settings)
+imdb_crawler.set_rules({&lsquo;/year/\d+&rsquo;: &lsquo;year_parser&rsquo;,</p>
 
-<h1>!/usr/bin/env python</h1>
-
-<p>from lxml.html import parse</p>
-
-<p>tree = parse(&lsquo;<a href="http://www.imdb.com/chart/top">http://www.imdb.com/chart/top</a>&rsquo;)</p>
-
-<p>movies_data = tree.findall(&lsquo;//<em>[@id=&ldquo;main&rdquo;]/table[2]/tr/td[3]/font/a&rsquo;)
-movies_rating = tree.findall(&lsquo;//</em>[@id=&ldquo;main&rdquo;]/table[2]/tr/td[2]/font&rsquo;)</p>
-
-<h1>Removing unwanted data</h1>
-
-<p>movies_data.pop(0)
-movies_rating.pop(0)</p>
-
-<p>movies_rating = [float(movie.text) for movie in movies_rating]</p>
-
-<p>def get_movie_data(iterator):</p>
-
-<pre><code>movie_data = (iterator.next(), iterator.next())
-return movie_data
+<pre><code>                    '/title/\w+': 'movie_parser'})
 </code></pre>
 
-<p>mov_dict = {get_movie_data(movies_data[i].itertext())[0]:</p>
-
-<pre><code>        [int(get_movie_data(movies_data[i].itertext())[1].strip(' ()/I')),
-         movies_rating[i]] for i in range(len(movies_data))}
-</code></pre>
-
-<p>```</p>
-
-<p>Going through the code in details. For this simple parser I have used <strong>parse</strong> from <strong>lxml.html</strong>.</p>
-
-<p><code>tree = parse(&lsquo;<a href="http://www.imdb.com/chart/top">http://www.imdb.com/chart/top</a>&rsquo;)</code> parses the <a href="http://www.imdb.com/chart/top">url</a> and returns a tree.<br/>
-Before going on the next line, lets discuss about <strong>XPath</strong>. XPath, the XML Path Language, is a query language for selecting nodes from an XML document. <a href="http://www.w3schools.com/xpath/">XPath Tutorial</a> is a very good tutorial for XPath by w3cschools.com. In the XPath,
-<code>&lsquo;//*[@id=&ldquo;main&rdquo;]/table[2]/tr/td[3]/font/a&rsquo;</code></p>
-
-<pre><code>// : Selects nodes in the document from the current node
-     that match the selection no matter where they are.  
-/ : Selects from the root node  
-/tr/td[3]: Selects the third td element that is the child of the tr element.   
-</code></pre>
-
-<p>To get the XPath of an element, you can use Google Chrome.
-Click on <strong>Inspect Element</strong>.
-<img src="/images/screen1.jpg"><br/>
-Then select <strong>Copy XPath</strong>.
-This would give you the XPath to be used. <strong>Remember to remove &lt;tbody&gt; element from the XPath. and also remove [] from tr as you want to scrape the whole movies list.</strong><br/>
-Similarly you can find the XPath for movies_rating also.</p>
-
-<p>Then in
-```python get_movie_data
-def get_movie_data(iterator):</p>
-
-<pre><code>""" Returns movie_name, year_of_release as movies_data[element].itertext()
-would return an iterator containing these two elements"""
-movie_data = (iterator.next(), iterator.next())
-return movie_data
-</code></pre>
-
-<p>mov_dict = {get_movie_data(movies_data[i].itertext())[0]:</p>
-
-<pre><code>        [int(get_movie_data(movies_data[i].itertext())[1].strip(' ()/I')),
-         movies_rating[i]] for i in range(len(movies_data))}
-</code></pre>
-
-<p>```
-<strong>mov_dict</strong> is built containing the dictionary with</p>
-
-<pre><code>key: movie_name
-value: year_of_release, moving_rating
-</code></pre>
+<p>imdb_crawler.start_crawl()
+```
+<code>imdb_crawler</code> is an instance of <em>IMDbCrawler</em>. It has been instantiated with the domain <a href="http://www.imdb.com">http://www.imdb.com</a> and start_url /year. Then the rules are set for different urls. It would call year_parser for all the webpages in the format of <a href="http://www.imdb.com/year/1992">http://www.imdb.com/year/1992</a> and movie_parser for webpages in the format of <a href="http://www.imdb.com/title/tt0477348/.">http://www.imdb.com/title/tt0477348/.</a></p>
 ]]></content>
   </entry>
   
