@@ -9,7 +9,8 @@
   <meta name="author" content="Abinash Panda">
 
   
-  <meta name="description" content="Machine learning, a branch of artificial intelligence, concerns the construction and study of systems that can learn from data. With a deluge of &hellip;">
+  <meta name="description" content="TeX: { extensions: [“AMSmath.js”]
+} Machine learning, a branch of artificial intelligence, concerns the construction and study of systems that can &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -54,6 +55,11 @@
                                                           }
                                                               });
               </script>
+              <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  TeX: { equationNumbers: { autoNumber: "AMS" } }
+});
+</script>
 
               <script type="text/javascript"
                  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
@@ -138,7 +144,11 @@
   </header>
 
 
-  <div class="entry-content"><p>Machine learning, a branch of artificial intelligence, concerns the construction and study of systems that can learn from data. With a deluge of machine learning sources both online and offline, a newcomer in this field would simply get stranded due to indecisiveneww. This post is for all <em>Machine Learning Enthusiasts</em> who are not able to find a way to understand <em>Machine Learning (ML)</em>.</p>
+  <div class="entry-content"><p>TeX: {
+  extensions: [“AMSmath.js”]
+}</p>
+
+<p>Machine learning, a branch of artificial intelligence, concerns the construction and study of systems that can learn from data. With a deluge of machine learning sources both online and offline, a newcomer in this field would simply get stranded due to indecisiveneww. This post is for all <em>Machine Learning Enthusiasts</em> who are not able to find a way to understand <em>Machine Learning (ML)</em>.</p>
 
 <p>This tutorial doesn’t require you to have a good deal of understanding of optimizations, linear algebra or probability. It is about learning basic concepts of Machine Learning and coding it. I would be using a python library <a href="http://scikit-learn.org/stable/">scikit-learn</a> for various <em>ML</em> applications.</p>
 
@@ -151,9 +161,9 @@
 <script type="math/tex; mode=display">
 \begin{align}
 y = \left [ \begin{array}{c}
-      y_1 \\
+      y^1 \\
       \vdots \\
-      y_n
+      y^n
     \end{array}\right]    \hspace{10 mm}
 X = \left[ \begin{array}{cc}
      X^1_1 \dots X^1_m \\
@@ -170,7 +180,7 @@ X = \left[ \begin{array}{cc}
 
 <script type="math/tex; mode=display">
 \begin{align}
-y_i = a_0 + a_1*X^i_1 + a_2*X^i_2 + \dots + a_m*X^i_m
+y^i = a_0 + a_1*X^i_1 + a_2*X^i_2 + \dots + a_m*X^i_m
 \end{align}
 </script>
 
@@ -201,9 +211,49 @@ h_\theta(X) = \theta_0 + \theta_1*X
 \end{align}
 </script>
 
-<p>The objective of linear regression is to correctly estimate the values of $\theta<em>0$ and $\theta</em>1$ such that $h_\theta(X)$ represents $y$.</p>
+<p>The objective of linear regression is to correctly estimate the values of <script type="math/tex">\theta_0</script> and <script type="math/tex">\theta_1</script> such that <script type="math/tex">h_\theta(X)</script> approximates to <script type="math/tex">y</script>. But how to do that?. For this we define a cost function or error function <script type="math/tex">J(\theta)</script> as:</p>
 
-<p>Linear Regression models are often fitted using <em>least squares</em> approach or by minimizing  a <em>penalized version of the least squares loss function</em>. </p>
+<script type="math/tex; mode=display">
+\begin{align}
+J(\theta) =  \frac{1}{2n}\sum_{i=1}^n (h_\theta(X^i) - y^i)
+\end{align}
+</script>
+
+<p>Linear Regression models are often fitted using <em>least squares</em> approach i.e. by minimizing squared error function (or by minimizing  a <em>penalized version of the squares error function</em>). For minimizing the <em>error function</em> we use the <em><a href="http://en.wikipedia.org/wiki/Gradient_descent">Gradient Descent Algorithm</a></em>. This method is based on the observation that if a function <script type="math/tex">f(x)</script> is <em>defined</em> and <em>differentiable</em> in the neighborhood of a point <script type="math/tex">\beta</script>, then <script type="math/tex">f(x)</script> decreases <em>fastest</em> if one goes from <script type="math/tex">\beta</script> in the direction of <em>negative gradient of</em> <script type="math/tex">f(x)</script> at <script type="math/tex">\beta</script>. So, we can find the minima by updating the value of <script type="math/tex">\beta</script> as:</p>
+
+<script type="math/tex; mode=display">
+\begin{align}
+\beta := \beta - \alpha\nabla f(\beta)
+\end{align}
+</script>
+
+<p>Where <script type="math/tex">\alpha</script> is the step size.<br />
+Using the above concept, we can find the values of <script type="math/tex">\theta_0</script> and <script type="math/tex">\theta_1</script> as:</p>
+
+<script type="math/tex; mode=display">
+\begin{align}
+\theta_0 := \theta_0 - \frac{\partial J(\theta)}{\partial \theta_0}\\
+\theta_1 := \theta_1 - \frac{\partial J(\theta)}{\partial \theta_1}
+\end{align}
+</script>
+
+<p>Replacing the values of <script type="math/tex">\frac{\partial J(\theta)}{\partial \theta_i}</script> as </p>
+
+<script type="math/tex; mode=display">
+\begin{align}
+\frac{\partial J(\theta)}{\partial \theta_i} = \frac{1}{n}\sum_{j=1}^n(h_\theta(X^j) - y^j)X_i
+\end{align}
+</script>
+
+<p>We can have a general formula for finding optimal value for any <script type="math/tex">\theta_i</script> as:</p>
+
+<script type="math/tex; mode=display">
+\begin{align}
+\theta_i := \theta_i - \frac{1}{n}\sum_{j=1}^n(h_\theta(X^j) - y^j)X_i
+\end{align}
+</script>
+
+<p>Phew!!!. A lot of mathematics</p>
 </div>
   
   
