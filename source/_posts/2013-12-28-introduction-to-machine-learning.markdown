@@ -6,10 +6,6 @@ comments: true
 categories: MachineLearning
 ---
 
-TeX: {
-  extensions: ["AMSmath.js"]
-}
-
 Machine learning, a branch of artificial intelligence, concerns the construction and study of systems that can learn from data. With a deluge of machine learning sources both online and offline, a newcomer in this field would simply get stranded due to indecisiveneww. This post is for all *Machine Learning Enthusiasts* who are not able to find a way to understand *Machine Learning (ML)*.
 
 This tutorial doesn't require you to have a good deal of understanding of optimizations, linear algebra or probability. It is about learning basic concepts of Machine Learning and coding it. I would be using a python library [scikit-learn](http://scikit-learn.org/stable/) for various *ML* applications.
@@ -95,11 +91,13 @@ Using the above concept, we can find the values of $$\theta_0$$ and $$\theta_1$$
 
 $$
 \begin{align}
-\theta_0 := \theta_0 - \frac{\partial J(\theta)}{\partial \theta_0}\\
-\theta_1 := \theta_1 - \frac{\partial J(\theta)}{\partial \theta_1}
+\theta_0 := \theta_0 - \alpha\frac{\partial J(\theta)}{\partial \theta_0}\\
+\theta_1 := \theta_1 - \alpha\frac{\partial J(\theta)}{\partial \theta_1}
 \end{align}
 $$
 
+
+Here $$\alpha$$ is called as the *learning rate*.    
 Replacing the values of $$\frac{\partial J(\theta)}{\partial \theta_i}$$ as 
 
 $$
@@ -112,8 +110,67 @@ We can have a general formula for finding optimal value for any $$\theta_i$$ as:
 
 $$
 \begin{align}
-\theta_i := \theta_i - \frac{1}{n}\sum_{j=1}^n(h_\theta(X^j) - y^j)X_i
+\theta_i := \theta_i - \alpha\frac{1}{n}\sum_{j=1}^n(h_\theta(X^j) - y^j)X_i
 \end{align}
 $$
 
-Phew!!!. A lot of mathematics
+Phew!!!. A lot of mathematics, right?. But where is the code?.
+
+Let's get our hands on some coding. For this tutorial I would be going to use [scikit-learn](http://scikit-learn.org/stable/) for *machine learning* and [matplotlib](http://matplotlib.org/) for *plotting*.
+
+Suppose, for a hypothetical city *FooCity*, population in 10,000s and profit in $10,000 are [available](/downloads/example1.txt). We want to predict price of a house of particular size. 
+
+```python load_data
+import numpy as np
+import matplotlib.pyplot as plt
+
+input_file = open('example1.txt')
+lines = input_file.readlines()
+
+X = [map(float, line.strip().split(','))[0] for line in lines]
+#X : size of house
+X = np.array(X)
+#converting X from a list to array
+X = X.reshape(X.shape[0], 1)
+#reshaping the X from size(97, ) to (97, 1)
+
+y = [map(float, line.strip().split(','))[1] for line in lines]
+#y : price of house
+y = np.array(y)
+#converting y from a list to array
+y = y.reshape(y.shape[0], 1)
+#reshaping the y from size(97, ) to (97, 1)
+
+plt.plot(X, y, 'r+', label='Input Data')
+#plotting house size vs house price
+plt.ylabel('Profit in $10,000s')
+plt.xlabel('Population of City in 10,000s')
+plt.show()
+```
+
+{% img /images/figure_1.png %}
+
+It is visible from the plot that Population and Profit are varying linearly, so we can apply linear regression and predict profit for a given population.    
+For performing *Linear Regression* we have to use <code>LinearRegression</code> class available in <code>sklearn.linear_model</code>.
+
+```python linear_regression
+from sklearn.linear_model import LinearRegression
+
+clf = LinearRegression()
+clf.fit(X, y)
+#linear regression using scikit-learn is very simple.
+#just call the fit method with X, y
+```
+We can now predict the value of Profit for any Population(such as 15.12*10000) as <code>clf.predict(15.12)</code>.
+
+```python plot
+x_ = np.linspace(np.min(X), np.max(X), 100).reshape(100, 1)
+#x : array with 100 equally spaced elements starting with 
+#min value of X upto max value of X
+y_ = clf.predict(x_)
+plt.plot(x_, y_, 'b', label='Predicted values')
+plt.legend(loc='best')
+``` 
+{% img /images/figure_2.png %}
+
+Next, we would be going for *Multivariate Linear Regression*.
