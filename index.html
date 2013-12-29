@@ -9,8 +9,7 @@
   <meta name="author" content="Abinash Panda">
 
   
-  <meta name="description" content="TeX: { extensions: [“AMSmath.js”]
-} Machine learning, a branch of artificial intelligence, concerns the construction and study of systems that can &hellip;">
+  <meta name="description" content="Machine learning, a branch of artificial intelligence, concerns the construction and study of systems that can learn from data. With a deluge of &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -144,11 +143,7 @@ MathJax.Hub.Config({
   </header>
 
 
-  <div class="entry-content"><p>TeX: {
-  extensions: [“AMSmath.js”]
-}</p>
-
-<p>Machine learning, a branch of artificial intelligence, concerns the construction and study of systems that can learn from data. With a deluge of machine learning sources both online and offline, a newcomer in this field would simply get stranded due to indecisiveneww. This post is for all <em>Machine Learning Enthusiasts</em> who are not able to find a way to understand <em>Machine Learning (ML)</em>.</p>
+  <div class="entry-content"><p>Machine learning, a branch of artificial intelligence, concerns the construction and study of systems that can learn from data. With a deluge of machine learning sources both online and offline, a newcomer in this field would simply get stranded due to indecisiveneww. This post is for all <em>Machine Learning Enthusiasts</em> who are not able to find a way to understand <em>Machine Learning (ML)</em>.</p>
 
 <p>This tutorial doesn’t require you to have a good deal of understanding of optimizations, linear algebra or probability. It is about learning basic concepts of Machine Learning and coding it. I would be using a python library <a href="http://scikit-learn.org/stable/">scikit-learn</a> for various <em>ML</em> applications.</p>
 
@@ -232,12 +227,13 @@ Using the above concept, we can find the values of <script type="math/tex">\thet
 
 <script type="math/tex; mode=display">
 \begin{align}
-\theta_0 := \theta_0 - \frac{\partial J(\theta)}{\partial \theta_0}\\
-\theta_1 := \theta_1 - \frac{\partial J(\theta)}{\partial \theta_1}
+\theta_0 := \theta_0 - \alpha\frac{\partial J(\theta)}{\partial \theta_0}\\
+\theta_1 := \theta_1 - \alpha\frac{\partial J(\theta)}{\partial \theta_1}
 \end{align}
 </script>
 
-<p>Replacing the values of <script type="math/tex">\frac{\partial J(\theta)}{\partial \theta_i}</script> as </p>
+<p>Here <script type="math/tex">\alpha</script> is called as the <em>learning rate</em>.  <br />
+Replacing the values of <script type="math/tex">\frac{\partial J(\theta)}{\partial \theta_i}</script> as </p>
 
 <script type="math/tex; mode=display">
 \begin{align}
@@ -249,11 +245,104 @@ Using the above concept, we can find the values of <script type="math/tex">\thet
 
 <script type="math/tex; mode=display">
 \begin{align}
-\theta_i := \theta_i - \frac{1}{n}\sum_{j=1}^n(h_\theta(X^j) - y^j)X_i
+\theta_i := \theta_i - \alpha\frac{1}{n}\sum_{j=1}^n(h_\theta(X^j) - y^j)X_i
 \end{align}
 </script>
 
-<p>Phew!!!. A lot of mathematics</p>
+<p>Phew!!!. A lot of mathematics, right?. But where is the code?.</p>
+
+<p>Let’s get our hands on some coding. For this tutorial I would be going to use <a href="http://scikit-learn.org/stable/">scikit-learn</a> for <em>machine learning</em> and <a href="http://matplotlib.org/">matplotlib</a> for <em>plotting</em>.</p>
+
+<p>Suppose, for a hypothetical city <em>FooCity</em>, population in 10,000s and profit in $10,000 are <a href="/downloads/example1.txt">available</a>. We want to predict price of a house of particular size. </p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>load_data</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+</span><span class="line"><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+</span><span class="line">
+</span><span class="line"><span class="n">input_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;example1.txt&#39;</span><span class="p">)</span>
+</span><span class="line"><span class="n">lines</span> <span class="o">=</span> <span class="n">input_file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+</span><span class="line">
+</span><span class="line"><span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">]</span>
+</span><span class="line"><span class="c">#X : size of house</span>
+</span><span class="line"><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+</span><span class="line"><span class="c">#converting X from a list to array</span>
+</span><span class="line"><span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+</span><span class="line"><span class="c">#reshaping the X from size(97, ) to (97, 1)</span>
+</span><span class="line">
+</span><span class="line"><span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">))[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">]</span>
+</span><span class="line"><span class="c">#y : price of house</span>
+</span><span class="line"><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+</span><span class="line"><span class="c">#converting y from a list to array</span>
+</span><span class="line"><span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+</span><span class="line"><span class="c">#reshaping the y from size(97, ) to (97, 1)</span>
+</span><span class="line">
+</span><span class="line"><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="s">&#39;r+&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;Input Data&#39;</span><span class="p">)</span>
+</span><span class="line"><span class="c">#plotting house size vs house price</span>
+</span><span class="line"><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Profit in $10,000s&#39;</span><span class="p">)</span>
+</span><span class="line"><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Population of City in 10,000s&#39;</span><span class="p">)</span>
+</span><span class="line"><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="/images/figure_1.png" /></p>
+
+<p>It is visible from the plot that Population and Profit are varying linearly, so we can apply linear regression and predict profit for a given population.  <br />
+For performing <em>Linear Regression</em> we have to use <code>LinearRegression</code> class available in <code>sklearn.linear_model</code>.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>linear_regression</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LinearRegression</span>
+</span><span class="line">
+</span><span class="line"><span class="n">clf</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span>
+</span><span class="line"><span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</span><span class="line"><span class="c">#linear regression using scikit-learn is very simple.</span>
+</span><span class="line"><span class="c">#just call the fit method with X, y</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>We can now predict the value of Profit for any Population(such as 15.12*10000) as <code>clf.predict(15.12)</code>.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>plot</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="n">x_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span><span class="line"><span class="c">#x : array with 100 equally spaced elements starting with </span>
+</span><span class="line"><span class="c">#min value of X upto max value of X</span>
+</span><span class="line"><span class="n">y_</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_</span><span class="p">)</span>
+</span><span class="line"><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;Predicted values&#39;</span><span class="p">)</span>
+</span><span class="line"><span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s">&#39;best&#39;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p><img src="/images/figure_2.png" /></p>
+
+<p>Next, we would be going for <em>Multivariate Linear Regression</em>.</p>
 </div>
   
   

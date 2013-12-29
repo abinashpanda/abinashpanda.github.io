@@ -4,7 +4,7 @@
   <title><![CDATA[Category: MachineLearning | Pythonic Musings]]></title>
   <link href="http://abinashpanda.github.io/blog/categories/machinelearning/atom.xml" rel="self"/>
   <link href="http://abinashpanda.github.io/"/>
-  <updated>2013-12-29T09:58:15+05:30</updated>
+  <updated>2013-12-29T11:56:19+05:30</updated>
   <id>http://abinashpanda.github.io/</id>
   <author>
     <name><![CDATA[Abinash Panda]]></name>
@@ -18,11 +18,7 @@
     <link href="http://abinashpanda.github.io/blog/2013/12/28/introduction-to-machine-learning/"/>
     <updated>2013-12-28T16:28:00+05:30</updated>
     <id>http://abinashpanda.github.io/blog/2013/12/28/introduction-to-machine-learning</id>
-    <content type="html"><![CDATA[<p>TeX: {
-  extensions: [“AMSmath.js”]
-}</p>
-
-<p>Machine learning, a branch of artificial intelligence, concerns the construction and study of systems that can learn from data. With a deluge of machine learning sources both online and offline, a newcomer in this field would simply get stranded due to indecisiveneww. This post is for all <em>Machine Learning Enthusiasts</em> who are not able to find a way to understand <em>Machine Learning (ML)</em>.</p>
+    <content type="html"><![CDATA[<p>Machine learning, a branch of artificial intelligence, concerns the construction and study of systems that can learn from data. With a deluge of machine learning sources both online and offline, a newcomer in this field would simply get stranded due to indecisiveneww. This post is for all <em>Machine Learning Enthusiasts</em> who are not able to find a way to understand <em>Machine Learning (ML)</em>.</p>
 
 <p>This tutorial doesn’t require you to have a good deal of understanding of optimizations, linear algebra or probability. It is about learning basic concepts of Machine Learning and coding it. I would be using a python library <a href="http://scikit-learn.org/stable/">scikit-learn</a> for various <em>ML</em> applications.</p>
 
@@ -106,12 +102,13 @@ Using the above concept, we can find the values of <script type="math/tex">\thet
 
 <script type="math/tex; mode=display">
 \begin{align}
-\theta_0 := \theta_0 - \frac{\partial J(\theta)}{\partial \theta_0}\\
-\theta_1 := \theta_1 - \frac{\partial J(\theta)}{\partial \theta_1}
+\theta_0 := \theta_0 - \alpha\frac{\partial J(\theta)}{\partial \theta_0}\\
+\theta_1 := \theta_1 - \alpha\frac{\partial J(\theta)}{\partial \theta_1}
 \end{align}
 </script>
 
-<p>Replacing the values of <script type="math/tex">\frac{\partial J(\theta)}{\partial \theta_i}</script> as </p>
+<p>Here <script type="math/tex">\alpha</script> is called as the <em>learning rate</em>.  <br />
+Replacing the values of <script type="math/tex">\frac{\partial J(\theta)}{\partial \theta_i}</script> as </p>
 
 <script type="math/tex; mode=display">
 \begin{align}
@@ -123,11 +120,70 @@ Using the above concept, we can find the values of <script type="math/tex">\thet
 
 <script type="math/tex; mode=display">
 \begin{align}
-\theta_i := \theta_i - \frac{1}{n}\sum_{j=1}^n(h_\theta(X^j) - y^j)X_i
+\theta_i := \theta_i - \alpha\frac{1}{n}\sum_{j=1}^n(h_\theta(X^j) - y^j)X_i
 \end{align}
 </script>
 
-<p>Phew!!!. A lot of mathematics</p>
+<p>Phew!!!. A lot of mathematics, right?. But where is the code?.</p>
+
+<p>Let’s get our hands on some coding. For this tutorial I would be going to use <a href="http://scikit-learn.org/stable/">scikit-learn</a> for <em>machine learning</em> and <a href="http://matplotlib.org/">matplotlib</a> for <em>plotting</em>.</p>
+
+<p>Suppose, for a hypothetical city <em>FooCity</em>, population in 10,000s and profit in $10,000 are <a href="/downloads/example1.txt">available</a>. We want to predict price of a house of particular size. </p>
+
+<p>```python load_data
+import numpy as np
+import matplotlib.pyplot as plt</p>
+
+<p>input_file = open(‘example1.txt’)
+lines = input_file.readlines()</p>
+
+<p>X = [map(float, line.strip().split(‘,’))[0] for line in lines]
+#X : size of house
+X = np.array(X)
+#converting X from a list to array
+X = X.reshape(X.shape[0], 1)
+#reshaping the X from size(97, ) to (97, 1)</p>
+
+<p>y = [map(float, line.strip().split(‘,’))[1] for line in lines]
+#y : price of house
+y = np.array(y)
+#converting y from a list to array
+y = y.reshape(y.shape[0], 1)
+#reshaping the y from size(97, ) to (97, 1)</p>
+
+<p>plt.plot(X, y, ‘r+’, label=’Input Data’)
+#plotting house size vs house price
+plt.ylabel(‘Profit in $10,000s’)
+plt.xlabel(‘Population of City in 10,000s’)
+plt.show()
+```</p>
+
+<p><img src="/images/figure_1.png"></p>
+
+<p>It is visible from the plot that Population and Profit are varying linearly, so we can apply linear regression and predict profit for a given population.  <br />
+For performing <em>Linear Regression</em> we have to use <code>LinearRegression</code> class available in <code>sklearn.linear_model</code>.</p>
+
+<p>```python linear_regression
+from sklearn.linear_model import LinearRegression</p>
+
+<p>clf = LinearRegression()
+clf.fit(X, y)
+#linear regression using scikit-learn is very simple.
+#just call the fit method with X, y
+```
+We can now predict the value of Profit for any Population(such as 15.12*10000) as <code>clf.predict(15.12)</code>.</p>
+
+<p><code>python plot
+x_ = np.linspace(np.min(X), np.max(X), 100).reshape(100, 1)
+#x : array with 100 equally spaced elements starting with 
+#min value of X upto max value of X
+y_ = clf.predict(x_)
+plt.plot(x_, y_, 'b', label='Predicted values')
+plt.legend(loc='best')
+</code> 
+<img src="/images/figure_2.png"></p>
+
+<p>Next, we would be going for <em>Multivariate Linear Regression</em>.</p>
 ]]></content>
   </entry>
   
