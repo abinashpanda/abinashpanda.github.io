@@ -1,0 +1,802 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Pythonic Musings]]></title>
+  <link href="http://abinashpanda.github.io/atom.xml" rel="self"/>
+  <link href="http://abinashpanda.github.io/"/>
+  <updated>2013-12-29T12:16:50+05:30</updated>
+  <id>http://abinashpanda.github.io/</id>
+  <author>
+    <name><![CDATA[Abinash Panda]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Introduction to Machine Learning]]></title>
+    <link href="http://abinashpanda.github.io/blog/2013/12/28/introduction-to-machine-learning/"/>
+    <updated>2013-12-28T16:28:00+05:30</updated>
+    <id>http://abinashpanda.github.io/blog/2013/12/28/introduction-to-machine-learning</id>
+    <content type="html"><![CDATA[<p>Machine learning, a branch of artificial intelligence, concerns the construction and study of systems that can learn from data. With a deluge of machine learning sources both online and offline, a newcomer in this field would simply get stranded due to indecisiveneww. This post is for all <em>Machine Learning Enthusiasts</em> who are not able to find a way to understand <em>Machine Learning (ML)</em>.</p>
+
+<p>This tutorial doesn’t require you to have a good deal of understanding of optimizations, linear algebra or probability. It is about learning basic concepts of Machine Learning and coding it. I would be using a python library <a href="http://scikit-learn.org/stable/">scikit-learn</a> for various <em>ML</em> applications.</p>
+
+<p>Let’s start with a very simple Machine Learning algorithm <strong>Linear Regression</strong>.</p>
+
+<h2 id="linear-regression">Linear Regression</h2>
+
+<p>Linear Regression is an approach to the model the relationship between a <em>scalar dependent variable y</em> and <em>one or more indenpendent variable X</em>.</p>
+
+<script type="math/tex; mode=display">
+\begin{align}
+y = \left [ \begin{array}{c}
+      y^1 \\
+      \vdots \\
+      y^n
+    \end{array}\right]    \hspace{10 mm}
+X = \left[ \begin{array}{cc}
+     X^1_1 \dots X^1_m \\
+     \vdots \ddots \vdots \\
+     X^n_1 \dots X^n_m
+     \end{array} \right]
+\end{align}
+</script>
+
+<p><em>n = number of samples</em><br />
+<em>m = number of features</em></p>
+
+<p>A linear regression model assumes that the relationship between the dependent variable $y_i$ and independent variable $X_i$.</p>
+
+<script type="math/tex; mode=display">
+\begin{align}
+y^i = a_0 + a_1*X^i_1 + a_2*X^i_2 + \dots + a_m*X^i_m
+\end{align}
+</script>
+
+<script type="math/tex; mode=display">
+\begin{align}
+y = \left[ \begin{array}{cc}1 \hspace{3 mm} X^1_1 \hspace{3 mm} \dots \hspace{3 mm} X^1_m \\
+		   1 \hspace{3 mm} X^2_1 \hspace{3 mm} \dots \hspace{3 mm}  X^2_m \\
+           \vdots \hspace{3 mm} \ddots \hspace{3 mm} \vdots \\
+           1 \hspace{3 mm} X^n_1 \hspace{3 mm} \dots \hspace{3 mm} X^n_m
+           \end{array} \right]
+    \left[ \begin{array}{c} a_0\\
+           a_1\\
+           \vdots \\
+           a_m
+           \end{array} \right]^T
+\end{align}
+</script>
+
+<p><em>a<sub>0</sub>, a<sub>1</sub>, …. , a<sub>m</sub></em> are some constants.</p>
+
+<h4 id="linear-regression-with-one-variable-univariate">Linear Regression with One Variable (Univariate)</h4>
+
+<p>First we start with modelling a hypothesis $h_\theta(X)$.</p>
+
+<script type="math/tex; mode=display">
+\begin{align}
+h_\theta(X) = \theta_0 + \theta_1*X
+\end{align}
+</script>
+
+<p>The objective of linear regression is to correctly estimate the values of <script type="math/tex">\theta_0</script> and <script type="math/tex">\theta_1</script> such that <script type="math/tex">h_\theta(X)</script> approximates to <script type="math/tex">y</script>. But how to do that?. For this we define a cost function or error function <script type="math/tex">J(\theta)</script> as:</p>
+
+<script type="math/tex; mode=display">
+\begin{align}
+J(\theta) =  \frac{1}{2n}\sum_{i=1}^n (h_\theta(X^i) - y^i)
+\end{align}
+</script>
+
+<p>Linear Regression models are often fitted using <em>least squares</em> approach i.e. by minimizing squared error function (or by minimizing  a <em>penalized version of the squares error function</em>). For minimizing the <em>error function</em> we use the <em><a href="http://en.wikipedia.org/wiki/Gradient_descent">Gradient Descent Algorithm</a></em>. This method is based on the observation that if a function <script type="math/tex">f(x)</script> is <em>defined</em> and <em>differentiable</em> in the neighborhood of a point <script type="math/tex">\beta</script>, then <script type="math/tex">f(x)</script> decreases <em>fastest</em> if one goes from <script type="math/tex">\beta</script> in the direction of <em>negative gradient of</em> <script type="math/tex">f(x)</script> at <script type="math/tex">\beta</script>. So, we can find the minima by updating the value of <script type="math/tex">\beta</script> as:</p>
+
+<script type="math/tex; mode=display">
+\begin{align}
+\beta := \beta - \alpha\nabla f(\beta)
+\end{align}
+</script>
+
+<p>Where <script type="math/tex">\alpha</script> is the step size.<br />
+Using the above concept, we can find the values of <script type="math/tex">\theta_0</script> and <script type="math/tex">\theta_1</script> as:</p>
+
+<script type="math/tex; mode=display">
+\begin{align}
+\theta_0 := \theta_0 - \alpha\frac{\partial J(\theta)}{\partial \theta_0}\\
+\theta_1 := \theta_1 - \alpha\frac{\partial J(\theta)}{\partial \theta_1}
+\end{align}
+</script>
+
+<p>Here <script type="math/tex">\alpha</script> is called as the <em>learning rate</em>.  <br />
+Replacing the values of <script type="math/tex">\frac{\partial J(\theta)}{\partial \theta_i}</script> as </p>
+
+<script type="math/tex; mode=display">
+\begin{align}
+\frac{\partial J(\theta)}{\partial \theta_i} = \frac{1}{n}\sum_{j=1}^n(h_\theta(X^j) - y^j)X_i
+\end{align}
+</script>
+
+<p>We can have a general formula for finding optimal value for any <script type="math/tex">\theta_i</script> as:</p>
+
+<script type="math/tex; mode=display">
+\begin{align}
+\theta_i := \theta_i - \alpha\frac{1}{n}\sum_{j=1}^n(h_\theta(X^j) - y^j)X_i
+\end{align}
+</script>
+
+<p>Phew!!!. A lot of mathematics, right?. But where is the code?.</p>
+
+<p>Let’s get our hands on some coding. For this tutorial I would be going to use <a href="http://scikit-learn.org/stable/">scikit-learn</a> for <em>machine learning</em> and <a href="http://matplotlib.org/">matplotlib</a> for <em>plotting</em>.</p>
+
+<p>Suppose, for a hypothetical city <em>FooCity</em>, population in 10,000s and profit in $10,000 are <a href="http://abinashpanda.github.io/downloads/example1.txt">available</a>. We want to predict price of a house of particular size. </p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>load_data</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+</span><span class="line"><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+</span><span class="line">
+</span><span class="line"><span class="n">input_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;example1.txt&#39;</span><span class="p">)</span>
+</span><span class="line"><span class="n">lines</span> <span class="o">=</span> <span class="n">input_file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+</span><span class="line">
+</span><span class="line"><span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">]</span>
+</span><span class="line"><span class="c">#X : size of house</span>
+</span><span class="line"><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+</span><span class="line"><span class="c">#converting X from a list to array</span>
+</span><span class="line"><span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+</span><span class="line"><span class="c">#reshaping the X from size(97, ) to (97, 1)</span>
+</span><span class="line">
+</span><span class="line"><span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">))[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">]</span>
+</span><span class="line"><span class="c">#y : price of house</span>
+</span><span class="line"><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+</span><span class="line"><span class="c">#converting y from a list to array</span>
+</span><span class="line"><span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+</span><span class="line"><span class="c">#reshaping the y from size(97, ) to (97, 1)</span>
+</span><span class="line">
+</span><span class="line"><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="s">&#39;r+&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;Input Data&#39;</span><span class="p">)</span>
+</span><span class="line"><span class="c">#plotting house size vs house price</span>
+</span><span class="line"><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Profit in $10,000s&#39;</span><span class="p">)</span>
+</span><span class="line"><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Population of City in 10,000s&#39;</span><span class="p">)</span>
+</span><span class="line"><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="http://abinashpanda.github.io/images/figure_1.png" /></p>
+
+<p>It is visible from the plot that Population and Profit are varying linearly, so we can apply linear regression and predict profit for a given population.  <br />
+For performing <em>Linear Regression</em> we have to use <code>LinearRegression</code> class available in <code>sklearn.linear_model</code>.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>linear_regression</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LinearRegression</span>
+</span><span class="line">
+</span><span class="line"><span class="n">clf</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span>
+</span><span class="line"><span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</span><span class="line"><span class="c">#linear regression using scikit-learn is very simple.</span>
+</span><span class="line"><span class="c">#just call the fit method with X, y</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>We can now predict the value of Profit for any Population(such as 15.12*10000) as <code>clf.predict(15.12)</code>.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>plot</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="n">x_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span><span class="line"><span class="c">#x : array with 100 equally spaced elements starting with </span>
+</span><span class="line"><span class="c">#min value of X upto max value of X</span>
+</span><span class="line"><span class="n">y_</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_</span><span class="p">)</span>
+</span><span class="line"><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;Predicted values&#39;</span><span class="p">)</span>
+</span><span class="line"><span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s">&#39;best&#39;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p><img src="http://abinashpanda.github.io/images/figure_2.png" /></p>
+
+<p>Next, we would be going for <em>Multivariate Linear Regression</em>.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Building a custom Parser]]></title>
+    <link href="http://abinashpanda.github.io/blog/2013/12/27/building-a-custom-parser/"/>
+    <updated>2013-12-27T10:08:00+05:30</updated>
+    <id>http://abinashpanda.github.io/blog/2013/12/27/building-a-custom-parser</id>
+    <content type="html"><![CDATA[<p>A Web crawler is an Internet bot that systematically browses the World Wide Web, typically for the purpose of Web indexing.</p>
+
+<p>This tutorial is about building your own web crawler - not the one that can scan the whole internet(like <a href="www.google.com">Google</a>), but one that is able to extract all the links from a given webpage. For this tutorial, I would be extracting information from IMDb.</p>
+
+<p><a href="www.imdb.com">IMDb</a> is an online database of information related to films, television programs and video games. I woulb be going to parse IMDb Top 250 and IMDb: Years and extract information about the movies ratings, year of release, start casts, directors, etc.</p>
+
+<p>First, let’s write a simple program (hard-code) to parse <a href="http://www.imdb.com/chart/top">IMDb Top 250</a>.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>main.py</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="c">#!/usr/bin/env python</span>
+</span><span class="line">
+</span><span class="line"><span class="kn">from</span> <span class="nn">lxml.html</span> <span class="kn">import</span> <span class="n">parse</span>
+</span><span class="line">
+</span><span class="line"><span class="n">tree</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="s">&#39;http://www.imdb.com/chart/top&#39;</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="n">movies_data</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s">&#39;//*[@id=&quot;main&quot;]/table[2]/tr/td[3]/font/a&#39;</span><span class="p">)</span>
+</span><span class="line"><span class="n">movies_rating</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s">&#39;//*[@id=&quot;main&quot;]/table[2]/tr/td[2]/font&#39;</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="c"># Removing unwanted data</span>
+</span><span class="line"><span class="n">movies_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span class="line"><span class="n">movies_rating</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="n">movies_rating</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">movie</span><span class="o">.</span><span class="n">text</span><span class="p">)</span> <span class="k">for</span> <span class="n">movie</span> <span class="ow">in</span> <span class="n">movies_rating</span><span class="p">]</span>
+</span><span class="line">
+</span><span class="line">
+</span><span class="line"><span class="k">def</span> <span class="nf">get_movie_data</span><span class="p">(</span><span class="n">iterator</span><span class="p">):</span>
+</span><span class="line">    <span class="n">movie_data</span> <span class="o">=</span> <span class="p">(</span><span class="n">iterator</span><span class="o">.</span><span class="n">next</span><span class="p">(),</span> <span class="n">iterator</span><span class="o">.</span><span class="n">next</span><span class="p">())</span>
+</span><span class="line">    <span class="k">return</span> <span class="n">movie_data</span>
+</span><span class="line">
+</span><span class="line"><span class="n">mov_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">get_movie_data</span><span class="p">(</span><span class="n">movies_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">itertext</span><span class="p">())[</span><span class="mi">0</span><span class="p">]:</span>
+</span><span class="line">            <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">get_movie_data</span><span class="p">(</span><span class="n">movies_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">itertext</span><span class="p">())[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39; ()/I&#39;</span><span class="p">)),</span>
+</span><span class="line">             <span class="n">movies_rating</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">movies_data</span><span class="p">))}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>Going through the code in details. For this simple parser I have used parse from lxml.html.</p>
+
+<p><code>tree = parse('http://www.imdb.com/chart/top')</code> parses the url and returns a tree.
+Before going on the next line, lets discuss about XPath. XPath, the XML Path Language, is a query language for selecting nodes from an XML document. <a href="http://www.w3schools.com/xpath/">XPath Tutorial</a> is a very good tutorial for XPath by w3cschools.com. In the XPath, <code>‘//*[@id=“main”]/table[2]/tr/td[3]/font/a’</code>.</p>
+
+<pre>
+	<code>
+// : Selects nodes in the document from the current node
+     that match the selection no matter where they are.  
+/ : Selects from the root node  
+/tr/td[3]: Selects the third td element that is the child of the tr element.   
+	</code>
+</pre>
+
+<p>To get the XPath of an element, you can use Google Chrome. Click on <em>Inspect Element</em>.</p>
+
+<p><img src="http://abinashpanda.github.io/images/screen1.jpg" /></p>
+
+<p>Then select <em>Copy XPath</em>. This would give you the XPath to be used. <strong>Remember to remove &lt;tbody&gt; element from the XPath. and also remove [] from tr as you want to scrape the whole movies list.</strong>
+Similarly you can find the XPath for movies_rating also.</p>
+
+<p>Then in</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>get_movie_data</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="k">def</span> <span class="nf">get_movie_data</span><span class="p">(</span><span class="n">iterator</span><span class="p">):</span>
+</span><span class="line">    <span class="sd">&quot;&quot;&quot; Returns movie_name, year_of_release as movies_data[element].itertext()</span>
+</span><span class="line"><span class="sd">    would return an iterator containing these two elements&quot;&quot;&quot;</span>
+</span><span class="line">    <span class="n">movie_data</span> <span class="o">=</span> <span class="p">(</span><span class="n">iterator</span><span class="o">.</span><span class="n">next</span><span class="p">(),</span> <span class="n">iterator</span><span class="o">.</span><span class="n">next</span><span class="p">())</span>
+</span><span class="line">    <span class="k">return</span> <span class="n">movie_data</span>
+</span><span class="line">
+</span><span class="line"><span class="n">mov_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">get_movie_data</span><span class="p">(</span><span class="n">movies_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">itertext</span><span class="p">())[</span><span class="mi">0</span><span class="p">]:</span>
+</span><span class="line">            <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">get_movie_data</span><span class="p">(</span><span class="n">movies_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">itertext</span><span class="p">())[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39; ()/I&#39;</span><span class="p">)),</span>
+</span><span class="line">             <span class="n">movies_rating</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">movies_data</span><span class="p">))}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p><em>movie_dict</em> is built containing the dictionary with</p>
+
+<pre>
+	<code>
+key: movie_name
+value: year_of_release, movie_rating
+	</code>
+</pre>
+
+<p>Let’s go a step further. After writing a simple (but hard-coded) parser, I am going to write a more generic (yet simple) parser. For this, I have take some concepts from <strong>scrapy</strong> <em>(imitation is the best form of flattery)</em> and have used <em>lxml</em> for scrapping.</p>
+
+<p>I would be scraping the <a href="http://www.imdb.com/year">IMDb: Years page</a>. This page contains the links for pages containing the links for Most Popular Titles Released in that year. In the next blog, I would be using the data scraped (a dictionary <code>{year: [name, rating, genres, director, actors]}</code> for analysing trends in Movies.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>Crawler.py</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+<span class="line-number">44</span>
+<span class="line-number">45</span>
+<span class="line-number">46</span>
+<span class="line-number">47</span>
+<span class="line-number">48</span>
+<span class="line-number">49</span>
+<span class="line-number">50</span>
+<span class="line-number">51</span>
+<span class="line-number">52</span>
+<span class="line-number">53</span>
+<span class="line-number">54</span>
+<span class="line-number">55</span>
+<span class="line-number">56</span>
+<span class="line-number">57</span>
+<span class="line-number">58</span>
+<span class="line-number">59</span>
+<span class="line-number">60</span>
+<span class="line-number">61</span>
+<span class="line-number">62</span>
+<span class="line-number">63</span>
+<span class="line-number">64</span>
+<span class="line-number">65</span>
+<span class="line-number">66</span>
+<span class="line-number">67</span>
+<span class="line-number">68</span>
+<span class="line-number">69</span>
+<span class="line-number">70</span>
+<span class="line-number">71</span>
+<span class="line-number">72</span>
+<span class="line-number">73</span>
+<span class="line-number">74</span>
+<span class="line-number">75</span>
+<span class="line-number">76</span>
+<span class="line-number">77</span>
+<span class="line-number">78</span>
+<span class="line-number">79</span>
+<span class="line-number">80</span>
+<span class="line-number">81</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="kn">import</span> <span class="nn">urllib2</span>
+</span><span class="line"><span class="kn">import</span> <span class="nn">re</span>
+</span><span class="line"><span class="kn">from</span> <span class="nn">lxml.html</span> <span class="kn">import</span> <span class="n">parse</span>
+</span><span class="line">
+</span><span class="line">
+</span><span class="line"><span class="k">class</span> <span class="nc">Crawler</span><span class="p">():</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">settings</span><span class="p">):</span>
+</span><span class="line">        <span class="sd">&quot;&quot;&quot;</span>
+</span><span class="line"><span class="sd">        settings should be a dictionary containing</span>
+</span><span class="line"><span class="sd">        domain:</span>
+</span><span class="line"><span class="sd">        start_url:</span>
+</span><span class="line">
+</span><span class="line"><span class="sd">        EXAMPLE</span>
+</span><span class="line"><span class="sd">        settings = {&#39;domain&#39;: &#39;http://www.imdb.com&#39;, &#39;start_url&#39;: &#39;/year&#39;}</span>
+</span><span class="line"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">settings</span> <span class="o">=</span> <span class="n">settings</span>
+</span><span class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">rules</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;start_url&#39;</span><span class="p">]:</span> <span class="s">&#39;parse&#39;</span><span class="p">}</span>
+</span><span class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">parsed_urls</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">url_list</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">def</span> <span class="nf">_get_all_urls</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+</span><span class="line">        <span class="sd">&quot;&quot;&quot;</span>
+</span><span class="line"><span class="sd">        _get_all_urls returns all the urls in the page</span>
+</span><span class="line"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span class="line">        <span class="n">tree</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</span><span class="line">        <span class="n">url_list</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s">&#39;//a&#39;</span><span class="p">)</span>
+</span><span class="line">        <span class="n">url_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">url</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&#39;href&#39;</span><span class="p">]</span>
+</span><span class="line">                    <span class="k">if</span> <span class="n">url</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&#39;href&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;http://&#39;</span><span class="p">)</span>
+</span><span class="line">                    <span class="k">else</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlparse</span><span class="o">.</span><span class="n">urljoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;domain&#39;</span><span class="p">],</span>
+</span><span class="line">                                                  <span class="n">url</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&#39;href&#39;</span><span class="p">])</span>
+</span><span class="line">                    <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">url_list</span><span class="p">]</span>
+</span><span class="line">        <span class="k">return</span> <span class="n">url_list</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">def</span> <span class="nf">set_rules</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rules</span><span class="p">):</span>
+</span><span class="line">        <span class="sd">&quot;&quot;&quot;</span>
+</span><span class="line"><span class="sd">        set_rules set the rules for crawling</span>
+</span><span class="line"><span class="sd">        rules are dictionary in the form</span>
+</span><span class="line"><span class="sd">        {url_pattern: parsing_function}</span>
+</span><span class="line">
+</span><span class="line"><span class="sd">        EXAMPLE</span>
+</span><span class="line"><span class="sd">        &gt;&gt;&gt; settings = {&#39;domain&#39;: &#39;http://www.imdb.com&#39;, &#39;start_url&#39;: &#39;/year&#39;}</span>
+</span><span class="line"><span class="sd">        &gt;&gt;&gt; imdb_crawler = Crawler(settings)</span>
+</span><span class="line"><span class="sd">        &gt;&gt;&gt; imdb_crawler.set_rules({&#39;/year/\d+&#39;: &#39;year_parser&#39;,</span>
+</span><span class="line"><span class="sd">        ...                         &#39;/title/\w+&#39;: &#39;movie_parser&#39;})</span>
+</span><span class="line"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">rules</span> <span class="o">=</span> <span class="n">rules</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">def</span> <span class="nf">_get_crawl_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
+</span><span class="line">        <span class="sd">&quot;&quot;&quot;</span>
+</span><span class="line"><span class="sd">        _get_crawl_function returns the crawl function to be</span>
+</span><span class="line"><span class="sd">        used for given url pattern</span>
+</span><span class="line"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span class="line">        <span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+</span><span class="line">            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
+</span><span class="line">                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">[</span><span class="n">pattern</span><span class="p">]</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+</span><span class="line">        <span class="sd">&quot;&quot;&quot;</span>
+</span><span class="line"><span class="sd">        parse is the default parser to be called</span>
+</span><span class="line"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span class="line">        <span class="k">pass</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">def</span> <span class="nf">start_crawl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class="line">        <span class="sd">&quot;&quot;&quot;</span>
+</span><span class="line"><span class="sd">        start_crawl is the method that starts calling</span>
+</span><span class="line"><span class="sd">        </span>
+</span><span class="line"><span class="sd">        EXAMPLE</span>
+</span><span class="line"><span class="sd">        &gt;&gt;&gt; foo_crawler = Crawler()</span>
+</span><span class="line"><span class="sd">        &gt;&gt;&gt; foo_crawler.start_crawl()</span>
+</span><span class="line"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span class="line">        <span class="n">response</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span>
+</span><span class="line">            <span class="n">urllib2</span><span class="o">.</span><span class="n">urlparse</span><span class="o">.</span><span class="n">urljoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;domain&#39;</span><span class="p">],</span>
+</span><span class="line">                                     <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;start_url&#39;</span><span class="p">]))</span>
+</span><span class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">url_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_all_urls</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</span><span class="line">        <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">url_list</span><span class="p">:</span>
+</span><span class="line">            <span class="k">if</span> <span class="n">url</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsed_urls</span><span class="p">:</span>
+</span><span class="line">                <span class="n">crawl_function</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_crawl_function</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+</span><span class="line">                <span class="k">if</span> <span class="n">crawl_function</span><span class="p">:</span>
+</span><span class="line">                    <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">crawl_function</span><span class="p">)(</span><span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
+</span><span class="line">                    <span class="bp">self</span><span class="o">.</span><span class="n">parsed_urls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>Crawler object have to be initailized with a dictionary settings <code>{‘domain’: domain_of_\page, ‘start_url’: start_url_page}</code> The <em>Crawler</em> class has attribute url_list that contains all the urls to be parsed and parsed_urls is a list of all the parsed urls.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>_get_all_urls</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="k">def</span> <span class="nf">_get_all_urls</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+</span><span class="line">    <span class="sd">&quot;&quot;&quot;</span>
+</span><span class="line"><span class="sd">    _get_all_urls returns all the urls in the page</span>
+</span><span class="line"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span class="line">    <span class="n">tree</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</span><span class="line">    <span class="n">url_list</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s">&#39;//a&#39;</span><span class="p">)</span>
+</span><span class="line">    <span class="n">url_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">url</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&#39;href&#39;</span><span class="p">]</span>
+</span><span class="line">                <span class="k">if</span> <span class="n">url</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&#39;href&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;http://&#39;</span><span class="p">)</span>
+</span><span class="line">                <span class="k">else</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlparse</span><span class="o">.</span><span class="n">urljoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;domain&#39;</span><span class="p">],</span>
+</span><span class="line">                                              <span class="n">url</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&#39;href&#39;</span><span class="p">])</span>
+</span><span class="line">                <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">url_list</span><span class="p">]</span>
+</span><span class="line">    <span class="k">return</span> <span class="n">url_list</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><code>_get_all_urls</code> retrieves all the urls present in the web page. <code>tree.findall(‘//a’)</code> would return all the //a tags present in the web page. If the url starts with http:// then it would append it as usual; but if the url is a relative url, it would append the final url formed by joining the url with the domain</p>
+<pre>
+	<code>
+urllib2.urlparse.urljoin(self.settings['domain'], url.attrib['href']
+	</code>
+</pre>
+
+<p><code>parse(response)</code> is the default parser of the Crawler. More sophisticated or complex parsers can be written for different urls using <code>set_rule</code>. For example:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>set_rule</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="n">settings</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;domain&#39;</span><span class="p">:</span> <span class="s">&#39;http://www.imdb.com&#39;</span><span class="p">,</span> <span class="s">&#39;start_url&#39;</span><span class="p">:</span> <span class="s">&#39;/year&#39;</span><span class="p">}</span>
+</span><span class="line"><span class="n">imdb_crawler</span> <span class="o">=</span> <span class="n">Crawler</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
+</span><span class="line"><span class="c"># year_parser is parser for scraping year pages</span>
+</span><span class="line"><span class="c"># movie_parser is parser for scraping movie pages</span>
+</span><span class="line"><span class="n">imdb_crawler</span><span class="o">.</span><span class="n">set_rules</span><span class="p">({</span><span class="s">&#39;/year/\d+&#39;</span><span class="p">:</span> <span class="s">&#39;year_parser&#39;</span><span class="p">,</span>
+</span><span class="line">                        <span class="s">&#39;/title/\w+&#39;</span><span class="p">:</span> <span class="s">&#39;movie_parser&#39;</span><span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>All the parser should have be an input parameter <code>response</code>. Discussed below in details.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>start_crawl</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="k">def</span> <span class="nf">start_crawl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class="line">    <span class="sd">&quot;&quot;&quot;</span>
+</span><span class="line"><span class="sd">    start_crawl is the method that starts calling</span>
+</span><span class="line"><span class="sd">    </span>
+</span><span class="line"><span class="sd">    EXAMPLE</span>
+</span><span class="line"><span class="sd">    &gt;&gt;&gt; foo_crawler = Crawler()</span>
+</span><span class="line"><span class="sd">    &gt;&gt;&gt; foo_crawler.start_crawl()</span>
+</span><span class="line"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span class="line">    <span class="n">response</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span>
+</span><span class="line">        <span class="n">urllib2</span><span class="o">.</span><span class="n">urlparse</span><span class="o">.</span><span class="n">urljoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;domain&#39;</span><span class="p">],</span>
+</span><span class="line">                                 <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;start_url&#39;</span><span class="p">]))</span>
+</span><span class="line">    <span class="bp">self</span><span class="o">.</span><span class="n">url_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_all_urls</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</span><span class="line">    <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">url_list</span><span class="p">:</span>
+</span><span class="line">        <span class="k">if</span> <span class="n">url</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsed_urls</span><span class="p">:</span>
+</span><span class="line">            <span class="n">crawl_function</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_crawl_function</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+</span><span class="line">            <span class="k">if</span> <span class="n">crawl_function</span><span class="p">:</span>
+</span><span class="line">                <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">crawl_function</span><span class="p">)(</span><span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
+</span><span class="line">                <span class="bp">self</span><span class="o">.</span><span class="n">parsed_urls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><code>start_crawl</code> is the main function that initiates crawling. First, it tries to get all the <em>urls</em> present in the start_page. It then searches the parser to be called for that particular url using <code>_get_crawl_function</code>.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="k">def</span> <span class="nf">_get_crawl_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
+</span><span class="line">    <span class="sd">&quot;&quot;&quot;</span>
+</span><span class="line"><span class="sd">    _get_crawl_function returns the crawl function to be</span>
+</span><span class="line"><span class="sd">    used for given url pattern</span>
+</span><span class="line"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span class="line">    <span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+</span><span class="line">        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
+</span><span class="line">            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">[</span><span class="n">pattern</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>The particular parser is then called according to rules set above. Finally the url is appended into <em>parsed_urls</em> list.</p>
+
+<p>Using the above <code>Crawler</code>, I have implemented <code>IMDbCrawler</code>.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>main.py</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+<span class="line-number">44</span>
+<span class="line-number">45</span>
+<span class="line-number">46</span>
+<span class="line-number">47</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="kn">from</span> <span class="nn">Crawler</span> <span class="kn">import</span> <span class="n">Crawler</span>
+</span><span class="line"><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+</span><span class="line">
+</span><span class="line"><span class="n">movie_final_dict</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="k">class</span> <span class="nc">IMDbCrawler</span><span class="p">(</span><span class="n">Crawler</span><span class="p">):</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">def</span> <span class="nf">year_parser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+</span><span class="line">        <span class="n">tree</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</span><span class="line">        <span class="n">year</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;//*[@id=&quot;header&quot;]/h1&#39;</span><span class="p">)</span>
+</span><span class="line">        <span class="k">print</span> <span class="n">year</span><span class="o">.</span><span class="n">text</span>
+</span><span class="line">        <span class="n">list_even</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span>
+</span><span class="line">            <span class="s">&#39;//table//tr[@class=&quot;even detailed&quot;]/td[@class=&quot;title&quot;]/a&#39;</span><span class="p">)</span>
+</span><span class="line">        <span class="n">list_odd</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span>
+</span><span class="line">            <span class="s">&#39;//table//tr[@class=&quot;odd detailed&quot;]/td[@class=&quot;title&quot;]/a&#39;</span><span class="p">)</span>
+</span><span class="line">        <span class="n">movies_list</span> <span class="o">=</span> <span class="n">list_even</span> <span class="o">+</span> <span class="n">list_odd</span>
+</span><span class="line">        <span class="n">movies_list_url</span> <span class="o">=</span> <span class="p">[</span><span class="n">urllib2</span><span class="o">.</span><span class="n">urlparse</span><span class="o">.</span><span class="n">urljoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;domain&#39;</span><span class="p">],</span>
+</span><span class="line">                                                    <span class="n">movie</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&#39;href&#39;</span><span class="p">])</span>
+</span><span class="line">                           <span class="k">for</span> <span class="n">movie</span> <span class="ow">in</span> <span class="n">movies_list</span><span class="p">]</span>
+</span><span class="line">        <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">movies_list_url</span><span class="p">:</span>
+</span><span class="line">            <span class="bp">self</span><span class="o">.</span><span class="n">url_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">def</span> <span class="nf">movie_parser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+</span><span class="line">        <span class="n">tree</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</span><span class="line">        <span class="n">name</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;//*[@id=&quot;overview-top&quot;]/h1/span[1]&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+</span><span class="line">        <span class="k">print</span> <span class="n">name</span>
+</span><span class="line">        <span class="k">try</span><span class="p">:</span>
+</span><span class="line">            <span class="n">genres</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s">&#39;//div[@itemprop=&quot;genre&quot;]//a&#39;</span><span class="p">)</span>
+</span><span class="line">            <span class="n">genres</span> <span class="o">=</span> <span class="p">[</span><span class="n">genre</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">genre</span> <span class="ow">in</span> <span class="n">genres</span><span class="p">]</span>
+</span><span class="line">            <span class="n">director</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">find</span><span class="p">(</span>
+</span><span class="line">                <span class="s">&#39;//div[@itemprop=&quot;director&quot;]//span[@itemprop=&quot;name&quot;]&#39;</span><span class="p">)</span>
+</span><span class="line">            <span class="n">director</span> <span class="o">=</span> <span class="n">director</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+</span><span class="line">            <span class="n">rating</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;//span[@itemprop=&quot;ratingValue&quot;]&#39;</span><span class="p">)</span>
+</span><span class="line">            <span class="n">rating</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">rating</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+</span><span class="line">            <span class="n">actors</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s">&#39;//td[@itemprop=&quot;actor&quot;]//a//span&#39;</span><span class="p">)</span>
+</span><span class="line">            <span class="n">actors</span> <span class="o">=</span> <span class="p">[</span><span class="n">actor</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">actor</span> <span class="ow">in</span> <span class="n">actors</span><span class="p">]</span>
+</span><span class="line">            <span class="n">year</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;//*[@id=&quot;overview-top&quot;]/h1/span[2]/a&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+</span><span class="line">            <span class="n">movie_final_dict</span><span class="p">[</span><span class="n">year</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">name</span><span class="p">,</span> <span class="n">rating</span><span class="p">,</span>
+</span><span class="line">                                           <span class="n">genres</span><span class="p">,</span> <span class="n">director</span><span class="p">,</span> <span class="n">actors</span><span class="p">])</span>
+</span><span class="line">        <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">):</span>
+</span><span class="line">            <span class="k">pass</span>
+</span><span class="line">
+</span><span class="line"><span class="n">settings</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;domain&#39;</span><span class="p">:</span> <span class="s">&#39;http://www.imdb.com&#39;</span><span class="p">,</span> <span class="s">&#39;start_url&#39;</span><span class="p">:</span> <span class="s">&#39;/year&#39;</span><span class="p">}</span>
+</span><span class="line"><span class="n">imdb_crawler</span> <span class="o">=</span> <span class="n">IMDbCrawler</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
+</span><span class="line"><span class="n">imdb_crawler</span><span class="o">.</span><span class="n">set_rules</span><span class="p">({</span><span class="s">&#39;/year/\d+&#39;</span><span class="p">:</span> <span class="s">&#39;year_parser&#39;</span><span class="p">,</span>
+</span><span class="line">                        <span class="s">&#39;/title/\w+&#39;</span><span class="p">:</span> <span class="s">&#39;movie_parser&#39;</span><span class="p">})</span>
+</span><span class="line"><span class="n">imdb_crawler</span><span class="o">.</span><span class="n">start_crawl</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><code>IMDbCrawler</code> has inherited <em>Crawler</em> class.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>year_parser</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="k">def</span> <span class="nf">year_parser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+</span><span class="line">    <span class="n">tree</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</span><span class="line">    <span class="n">year</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;//*[@id=&quot;header&quot;]/h1&#39;</span><span class="p">)</span>
+</span><span class="line">    <span class="k">print</span> <span class="n">year</span><span class="o">.</span><span class="n">text</span>
+</span><span class="line">    <span class="n">list_even</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span>
+</span><span class="line">        <span class="s">&#39;//table//tr[@class=&quot;even detailed&quot;]/td[@class=&quot;title&quot;]/a&#39;</span><span class="p">)</span>
+</span><span class="line">    <span class="n">list_odd</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span>
+</span><span class="line">        <span class="s">&#39;//table//tr[@class=&quot;odd detailed&quot;]/td[@class=&quot;title&quot;]/a&#39;</span><span class="p">)</span>
+</span><span class="line">    <span class="n">movies_list</span> <span class="o">=</span> <span class="n">list_even</span> <span class="o">+</span> <span class="n">list_odd</span>
+</span><span class="line">    <span class="n">movies_list_url</span> <span class="o">=</span> <span class="p">[</span><span class="n">urllib2</span><span class="o">.</span><span class="n">urlparse</span><span class="o">.</span><span class="n">urljoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s">&#39;domain&#39;</span><span class="p">],</span>
+</span><span class="line">                                                <span class="n">movie</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&#39;href&#39;</span><span class="p">])</span>
+</span><span class="line">                       <span class="k">for</span> <span class="n">movie</span> <span class="ow">in</span> <span class="n">movies_list</span><span class="p">]</span>
+</span><span class="line">    <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">movies_list_url</span><span class="p">:</span>
+</span><span class="line">        <span class="bp">self</span><span class="o">.</span><span class="n">url_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p><code>year_parser</code> would crawl year pages and append the movie pages into url_list. XPath for extracting movie url and year name is discussed above.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>movie_parser</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="k">def</span> <span class="nf">movie_parser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+</span><span class="line">    <span class="n">tree</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</span><span class="line">    <span class="n">name</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;//*[@id=&quot;overview-top&quot;]/h1/span[1]&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+</span><span class="line">    <span class="k">print</span> <span class="n">name</span>
+</span><span class="line">    <span class="k">try</span><span class="p">:</span>
+</span><span class="line">        <span class="n">genres</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s">&#39;//div[@itemprop=&quot;genre&quot;]//a&#39;</span><span class="p">)</span>
+</span><span class="line">        <span class="n">genres</span> <span class="o">=</span> <span class="p">[</span><span class="n">genre</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">genre</span> <span class="ow">in</span> <span class="n">genres</span><span class="p">]</span>
+</span><span class="line">        <span class="n">director</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">find</span><span class="p">(</span>
+</span><span class="line">            <span class="s">&#39;//div[@itemprop=&quot;director&quot;]//span[@itemprop=&quot;name&quot;]&#39;</span><span class="p">)</span>
+</span><span class="line">        <span class="n">director</span> <span class="o">=</span> <span class="n">director</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+</span><span class="line">        <span class="n">rating</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;//span[@itemprop=&quot;ratingValue&quot;]&#39;</span><span class="p">)</span>
+</span><span class="line">        <span class="n">rating</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">rating</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+</span><span class="line">        <span class="n">actors</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s">&#39;//td[@itemprop=&quot;actor&quot;]//a//span&#39;</span><span class="p">)</span>
+</span><span class="line">        <span class="n">actors</span> <span class="o">=</span> <span class="p">[</span><span class="n">actor</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">actor</span> <span class="ow">in</span> <span class="n">actors</span><span class="p">]</span>
+</span><span class="line">        <span class="n">year</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;//*[@id=&quot;overview-top&quot;]/h1/span[2]/a&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+</span><span class="line">        <span class="n">movie_final_dict</span><span class="p">[</span><span class="n">year</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">name</span><span class="p">,</span> <span class="n">rating</span><span class="p">,</span>
+</span><span class="line">                                       <span class="n">genres</span><span class="p">,</span> <span class="n">director</span><span class="p">,</span> <span class="n">actors</span><span class="p">])</span>
+</span><span class="line">    <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">):</span>
+</span><span class="line">        <span class="k">pass</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p><code>movie_parser</code> would crawl the movie web page and add the details of the movies such as its <em>ratings, director, genres</em> in the dictionary <em>movie_final_dict</em>. There are some movies where data (rating, actors, etc.) is missing, so I have included try and except statements.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="n">settings</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;domain&#39;</span><span class="p">:</span> <span class="s">&#39;http://www.imdb.com&#39;</span><span class="p">,</span> <span class="s">&#39;start_url&#39;</span><span class="p">:</span> <span class="s">&#39;/year&#39;</span><span class="p">}</span>
+</span><span class="line"><span class="n">imdb_crawler</span> <span class="o">=</span> <span class="n">IMDbCrawler</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
+</span><span class="line"><span class="n">imdb_crawler</span><span class="o">.</span><span class="n">set_rules</span><span class="p">({</span><span class="s">&#39;/year/\d+&#39;</span><span class="p">:</span> <span class="s">&#39;year_parser&#39;</span><span class="p">,</span>
+</span><span class="line">                        <span class="s">&#39;/title/\w+&#39;</span><span class="p">:</span> <span class="s">&#39;movie_parser&#39;</span><span class="p">})</span>
+</span><span class="line"><span class="n">imdb_crawler</span><span class="o">.</span><span class="n">start_crawl</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p><code>imdb_crawler</code> is an instance of <em>IMDbCrawler</em>. It has been instantiated with the domain http://www.imdb.com and start_url /year. Then the rules are set for different urls. It would call year_parser for all the webpages in the format of http://www.imdb.com/year/1992 and movie_parser for webpages in the format of http://www.imdb.com/title/tt0477348/.</p>
+]]></content>
+  </entry>
+  
+</feed>

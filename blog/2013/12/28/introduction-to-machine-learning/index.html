@@ -1,0 +1,525 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Introduction to Machine Learning - Pythonic Musings</title>
+  <meta name="author" content="Abinash Panda">
+
+  
+  <meta name="description" content="Machine learning, a branch of artificial intelligence, concerns the construction and study of systems that can learn from data. With a deluge of &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://abinashpanda.github.io/blog/2013/12/28/introduction-to-machine-learning/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Pythonic Musings" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<head>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+              tex2jax: {
+                        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+                              processEscapes: true
+                                  }
+                                    });
+      </script>
+
+      <script type="text/x-mathjax-config">
+          MathJax.Hub.Config({
+                    tex2jax: {
+                                skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+                                      }
+                                          });
+          </script>
+
+          <script type="text/x-mathjax-config">
+              MathJax.Hub.Queue(function() {
+                          var all = MathJax.Hub.getAllJax(), i;
+                                  for(i=0; i < all.length; i += 1) {
+                                                  all[i].SourceElement().parentNode.className += ' has-jax';
+                                                          }
+                                                              });
+              </script>
+              <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  TeX: { equationNumbers: { autoNumber: "AMS" } }
+});
+</script>
+
+              <script type="text/javascript"
+                 src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+                 </script>
+</head>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-44969657-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Pythonic Musings</a></h1>
+  
+    <h2>Data Analysis and Machine Learning in Python</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:abinashpanda.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Introduction to Machine Learning</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-28T16:28:00+05:30" pubdate data-updated="true">Dec 28<span>th</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Machine learning, a branch of artificial intelligence, concerns the construction and study of systems that can learn from data. With a deluge of machine learning sources both online and offline, a newcomer in this field would simply get stranded due to indecisiveneww. This post is for all <em>Machine Learning Enthusiasts</em> who are not able to find a way to understand <em>Machine Learning (ML)</em>.</p>
+
+<p>This tutorial doesn’t require you to have a good deal of understanding of optimizations, linear algebra or probability. It is about learning basic concepts of Machine Learning and coding it. I would be using a python library <a href="http://scikit-learn.org/stable/">scikit-learn</a> for various <em>ML</em> applications.</p>
+
+<p>Let’s start with a very simple Machine Learning algorithm <strong>Linear Regression</strong>.</p>
+
+<h2 id="linear-regression">Linear Regression</h2>
+
+<p>Linear Regression is an approach to the model the relationship between a <em>scalar dependent variable y</em> and <em>one or more indenpendent variable X</em>.</p>
+
+<script type="math/tex; mode=display">
+\begin{align}
+y = \left [ \begin{array}{c}
+      y^1 \\
+      \vdots \\
+      y^n
+    \end{array}\right]    \hspace{10 mm}
+X = \left[ \begin{array}{cc}
+     X^1_1 \dots X^1_m \\
+     \vdots \ddots \vdots \\
+     X^n_1 \dots X^n_m
+     \end{array} \right]
+\end{align}
+</script>
+
+<p><em>n = number of samples</em><br />
+<em>m = number of features</em></p>
+
+<p>A linear regression model assumes that the relationship between the dependent variable $y_i$ and independent variable $X_i$.</p>
+
+<script type="math/tex; mode=display">
+\begin{align}
+y^i = a_0 + a_1*X^i_1 + a_2*X^i_2 + \dots + a_m*X^i_m
+\end{align}
+</script>
+
+<script type="math/tex; mode=display">
+\begin{align}
+y = \left[ \begin{array}{cc}1 \hspace{3 mm} X^1_1 \hspace{3 mm} \dots \hspace{3 mm} X^1_m \\
+		   1 \hspace{3 mm} X^2_1 \hspace{3 mm} \dots \hspace{3 mm}  X^2_m \\
+           \vdots \hspace{3 mm} \ddots \hspace{3 mm} \vdots \\
+           1 \hspace{3 mm} X^n_1 \hspace{3 mm} \dots \hspace{3 mm} X^n_m
+           \end{array} \right]
+    \left[ \begin{array}{c} a_0\\
+           a_1\\
+           \vdots \\
+           a_m
+           \end{array} \right]^T
+\end{align}
+</script>
+
+<p><em>a<sub>0</sub>, a<sub>1</sub>, …. , a<sub>m</sub></em> are some constants.</p>
+
+<h4 id="linear-regression-with-one-variable-univariate">Linear Regression with One Variable (Univariate)</h4>
+
+<p>First we start with modelling a hypothesis $h_\theta(X)$.</p>
+
+<script type="math/tex; mode=display">
+\begin{align}
+h_\theta(X) = \theta_0 + \theta_1*X
+\end{align}
+</script>
+
+<p>The objective of linear regression is to correctly estimate the values of <script type="math/tex">\theta_0</script> and <script type="math/tex">\theta_1</script> such that <script type="math/tex">h_\theta(X)</script> approximates to <script type="math/tex">y</script>. But how to do that?. For this we define a cost function or error function <script type="math/tex">J(\theta)</script> as:</p>
+
+<script type="math/tex; mode=display">
+\begin{align}
+J(\theta) =  \frac{1}{2n}\sum_{i=1}^n (h_\theta(X^i) - y^i)
+\end{align}
+</script>
+
+<p>Linear Regression models are often fitted using <em>least squares</em> approach i.e. by minimizing squared error function (or by minimizing  a <em>penalized version of the squares error function</em>). For minimizing the <em>error function</em> we use the <em><a href="http://en.wikipedia.org/wiki/Gradient_descent">Gradient Descent Algorithm</a></em>. This method is based on the observation that if a function <script type="math/tex">f(x)</script> is <em>defined</em> and <em>differentiable</em> in the neighborhood of a point <script type="math/tex">\beta</script>, then <script type="math/tex">f(x)</script> decreases <em>fastest</em> if one goes from <script type="math/tex">\beta</script> in the direction of <em>negative gradient of</em> <script type="math/tex">f(x)</script> at <script type="math/tex">\beta</script>. So, we can find the minima by updating the value of <script type="math/tex">\beta</script> as:</p>
+
+<script type="math/tex; mode=display">
+\begin{align}
+\beta := \beta - \alpha\nabla f(\beta)
+\end{align}
+</script>
+
+<p>Where <script type="math/tex">\alpha</script> is the step size.<br />
+Using the above concept, we can find the values of <script type="math/tex">\theta_0</script> and <script type="math/tex">\theta_1</script> as:</p>
+
+<script type="math/tex; mode=display">
+\begin{align}
+\theta_0 := \theta_0 - \alpha\frac{\partial J(\theta)}{\partial \theta_0}\\
+\theta_1 := \theta_1 - \alpha\frac{\partial J(\theta)}{\partial \theta_1}
+\end{align}
+</script>
+
+<p>Here <script type="math/tex">\alpha</script> is called as the <em>learning rate</em>.  <br />
+Replacing the values of <script type="math/tex">\frac{\partial J(\theta)}{\partial \theta_i}</script> as </p>
+
+<script type="math/tex; mode=display">
+\begin{align}
+\frac{\partial J(\theta)}{\partial \theta_i} = \frac{1}{n}\sum_{j=1}^n(h_\theta(X^j) - y^j)X_i
+\end{align}
+</script>
+
+<p>We can have a general formula for finding optimal value for any <script type="math/tex">\theta_i</script> as:</p>
+
+<script type="math/tex; mode=display">
+\begin{align}
+\theta_i := \theta_i - \alpha\frac{1}{n}\sum_{j=1}^n(h_\theta(X^j) - y^j)X_i
+\end{align}
+</script>
+
+<p>Phew!!!. A lot of mathematics, right?. But where is the code?.</p>
+
+<p>Let’s get our hands on some coding. For this tutorial I would be going to use <a href="http://scikit-learn.org/stable/">scikit-learn</a> for <em>machine learning</em> and <a href="http://matplotlib.org/">matplotlib</a> for <em>plotting</em>.</p>
+
+<p>Suppose, for a hypothetical city <em>FooCity</em>, population in 10,000s and profit in $10,000 are <a href="/downloads/example1.txt">available</a>. We want to predict price of a house of particular size. </p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>load_data</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+</span><span class="line"><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+</span><span class="line">
+</span><span class="line"><span class="n">input_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;example1.txt&#39;</span><span class="p">)</span>
+</span><span class="line"><span class="n">lines</span> <span class="o">=</span> <span class="n">input_file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+</span><span class="line">
+</span><span class="line"><span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">]</span>
+</span><span class="line"><span class="c">#X : size of house</span>
+</span><span class="line"><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+</span><span class="line"><span class="c">#converting X from a list to array</span>
+</span><span class="line"><span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+</span><span class="line"><span class="c">#reshaping the X from size(97, ) to (97, 1)</span>
+</span><span class="line">
+</span><span class="line"><span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">))[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">]</span>
+</span><span class="line"><span class="c">#y : price of house</span>
+</span><span class="line"><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+</span><span class="line"><span class="c">#converting y from a list to array</span>
+</span><span class="line"><span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+</span><span class="line"><span class="c">#reshaping the y from size(97, ) to (97, 1)</span>
+</span><span class="line">
+</span><span class="line"><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="s">&#39;r+&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;Input Data&#39;</span><span class="p">)</span>
+</span><span class="line"><span class="c">#plotting house size vs house price</span>
+</span><span class="line"><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;Profit in $10,000s&#39;</span><span class="p">)</span>
+</span><span class="line"><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;Population of City in 10,000s&#39;</span><span class="p">)</span>
+</span><span class="line"><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="/images/figure_1.png" /></p>
+
+<p>It is visible from the plot that Population and Profit are varying linearly, so we can apply linear regression and predict profit for a given population.  <br />
+For performing <em>Linear Regression</em> we have to use <code>LinearRegression</code> class available in <code>sklearn.linear_model</code>.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>linear_regression</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LinearRegression</span>
+</span><span class="line">
+</span><span class="line"><span class="n">clf</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span>
+</span><span class="line"><span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</span><span class="line"><span class="c">#linear regression using scikit-learn is very simple.</span>
+</span><span class="line"><span class="c">#just call the fit method with X, y</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>We can now predict the value of Profit for any Population(such as 15.12*10000) as <code>clf.predict(15.12)</code>.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>plot</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="n">x_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span><span class="line"><span class="c">#x : array with 100 equally spaced elements starting with </span>
+</span><span class="line"><span class="c">#min value of X upto max value of X</span>
+</span><span class="line"><span class="n">y_</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_</span><span class="p">)</span>
+</span><span class="line"><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;Predicted values&#39;</span><span class="p">)</span>
+</span><span class="line"><span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s">&#39;best&#39;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p><img src="/images/figure_2.png" /></p>
+
+<p>Next, we would be going for <em>Multivariate Linear Regression</em>.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Abinash Panda</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-28T16:28:00+05:30" pubdate data-updated="true">Dec 28<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/machinelearning/'>MachineLearning</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://abinashpanda.github.io/blog/2013/12/28/introduction-to-machine-learning/" data-via="" data-counturl="http://abinashpanda.github.io/blog/2013/12/28/introduction-to-machine-learning/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/12/27/building-a-custom-parser/" title="Previous Post: Building a custom Parser">&laquo; Building a custom Parser</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/12/28/introduction-to-machine-learning/">Introduction to Machine Learning</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/27/building-a-custom-parser/">Building a custom Parser</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/abinashpanda">@abinashpanda</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'abinashpanda',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Abinash Panda -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>. Design by <a href="http://octopressthemes.com">Octopress Themes</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'pythonicmusings';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://abinashpanda.github.io/blog/2013/12/28/introduction-to-machine-learning/';
+        var disqus_url = 'http://abinashpanda.github.io/blog/2013/12/28/introduction-to-machine-learning/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

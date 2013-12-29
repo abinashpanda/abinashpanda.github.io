@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
+    <url>
+        <loc>http://abinashpanda.github.io/blog/2013/12/27/building-a-custom-parser/</loc>
+        <lastmod>2013-12-28T12:21:23+05:30</lastmod>
+    </url>
+    <url>
+        <loc>http://abinashpanda.github.io/blog/2013/12/28/introduction-to-machine-learning/</loc>
+        <lastmod>2013-12-29T11:54:57+05:30</lastmod>
+    </url>
+    <url>
+        <loc>http://abinashpanda.github.io/blog/archives/</loc>
+        <lastmod>2013-12-29T11:54:57+05:30</lastmod>
+    </url>
+    <url>
+        <loc>http://abinashpanda.github.io/robots.txt</loc>
+        <lastmod>2013-12-28T12:21:23+05:30</lastmod>
+    </url>
+    <url>
+        <loc>http://abinashpanda.github.io/</loc>
+        <lastmod>2013-12-29T11:54:57+05:30</lastmod>
+    </url>
+</urlset>
