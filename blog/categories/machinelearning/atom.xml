@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: MachineLearning | Pythonic Musings]]></title>
+  <link href="http://abinashpanda.github.io/blog/categories/machinelearning/atom.xml" rel="self"/>
+  <link href="http://abinashpanda.github.io/"/>
+  <updated>2013-12-29T08:07:35+05:30</updated>
+  <id>http://abinashpanda.github.io/</id>
+  <author>
+    <name><![CDATA[Abinash Panda]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Introduction to Machine Learning]]></title>
+    <link href="http://abinashpanda.github.io/blog/2013/12/28/introduction-to-machine-learning/"/>
+    <updated>2013-12-28T16:28:00+05:30</updated>
+    <id>http://abinashpanda.github.io/blog/2013/12/28/introduction-to-machine-learning</id>
+    <content type="html"><![CDATA[<p>Machine learning, a branch of artificial intelligence, concerns the construction and study of systems that can learn from data. With a deluge of machine learning sources both online and offline, a newcomer in this field would simply get stranded due to indecisiveneww. This post is for all <em>Machine Learning Enthusiasts</em> who are not able to find a way to understand <em>Machine Learning (ML)</em>.</p>
+
+<p>This tutorial doesn’t require you to have a good deal of understanding of optimizations, linear algebra or probability. It is about learning basic concepts of Machine Learning and coding it. I would be using a python library <a href="http://scikit-learn.org/stable/">scikit-learn</a> for various <em>ML</em> applications.</p>
+
+<p>Let’s start with a very simple Machine Learning algorithm <strong>Linear Regression</strong>.</p>
+
+<h2 id="linear-regression">Linear Regression</h2>
+
+<p>Linear Regression is an approach to the model the relationship between a <em>scalar dependent variable y</em> and <em>one or more indenpendent variable X</em>.</p>
+
+<script type="math/tex; mode=display">
+\begin{align}
+y = \left [ \begin{array}{c}
+      y_1 \\
+      \vdots \\
+      y_n
+    \end{array}\right]    \hspace{10 mm}
+X = \left[ \begin{array}{cc}
+     X^1_1 \dots X^1_m \\
+     \vdots \ddots \vdots \\
+     X^n_1 \dots X^n_m
+     \end{array} \right]
+\end{align}
+</script>
+
+<p><em>n = number of samples</em><br />
+<em>m = number of features</em></p>
+
+<p>A linear regression model assumes that the relationship between the dependent variable $y_i$ and independent variable $X_i$.</p>
+
+<script type="math/tex; mode=display">
+\begin{align}
+y_i = a_0 + a_1*X^i_1 + a_2*X^i_2 + \dots + a_m*X^i_m
+\end{align}
+</script>
+
+<script type="math/tex; mode=display">
+\begin{align}
+y = \left[ \begin{array}{cc}1 \hspace{3 mm} X^1_1 \hspace{3 mm} \dots \hspace{3 mm} X^1_m \\
+		   1 \hspace{3 mm} X^2_1 \hspace{3 mm} \dots \hspace{3 mm}  X^2_m \\
+           \vdots \hspace{3 mm} \ddots \hspace{3 mm} \vdots \\
+           1 \hspace{3 mm} X^n_1 \hspace{3 mm} \dots \hspace{3 mm} X^n_m
+           \end{array} \right]
+    \left[ \begin{array}{c} a_0\\
+           a_1\\
+           \vdots \\
+           a_m
+           \end{array} \right]^T
+\end{align}
+</script>
+
+<p><em>a<sub>0</sub>, a<sub>1</sub>, …. , a<sub>m</sub></em> are some constants.</p>
+
+<h4 id="linear-regression-with-one-variable-univariate">Linear Regression with One Variable (Univariate)</h4>
+
+<p>First we start with modelling a hypothesis $h_\theta(X)$.</p>
+
+<script type="math/tex; mode=display">
+\begin{align}
+h_\theta(X) = \theta_0 + \theta_1*X
+\end{align}
+</script>
+
+<p>The objective of linear regression is to correctly estimate the values of $\theta<em>0$ and $\theta</em>1$ such that $h_\theta(X)$ represents $y$.</p>
+
+<p>Linear Regression models are often fitted using <em>least squares</em> approach or by minimizing  a <em>penalized version of the least squares loss function</em>. </p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -5,13 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Blog Archive - Pythonic Musings</title>
+  <title>Introduction to Machine Learning - Pythonic Musings</title>
   <meta name="author" content="Abinash Panda">
 
   
-  <meta name="description" content="Blog Archive 2013 Introduction to Machine Learning
-Dec 28 2013 posted in MachineLearning Building a custom Parser
-Dec 27 2013 posted in DataMining &hellip;">
+  <meta name="description" content="Machine learning, a branch of artificial intelligence, concerns the construction and study of systems that can learn from data. With a deluge of &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -20,7 +18,7 @@ Dec 27 2013 posted in DataMining &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://abinashpanda.github.io/blog/archives/">
+  <link rel="canonical" href="http://abinashpanda.github.io/blog/2013/12/28/introduction-to-machine-learning/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -108,50 +106,162 @@ Dec 27 2013 posted in DataMining &hellip;">
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Blog Archive</h1>
+    
+      <h1 class="entry-title">Introduction to Machine Learning</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-28T16:28:00+05:30" pubdate data-updated="true">Dec 28<span>th</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives">
 
 
+<div class="entry-content"><p>Machine learning, a branch of artificial intelligence, concerns the construction and study of systems that can learn from data. With a deluge of machine learning sources both online and offline, a newcomer in this field would simply get stranded due to indecisiveneww. This post is for all <em>Machine Learning Enthusiasts</em> who are not able to find a way to understand <em>Machine Learning (ML)</em>.</p>
 
-  
-  <h2>2013</h2>
+<p>This tutorial doesn’t require you to have a good deal of understanding of optimizations, linear algebra or probability. It is about learning basic concepts of Machine Learning and coding it. I would be using a python library <a href="http://scikit-learn.org/stable/">scikit-learn</a> for various <em>ML</em> applications.</p>
 
-<article>
-  
-<h1><a href="/blog/2013/12/28/introduction-to-machine-learning/">Introduction to Machine Learning</a></h1>
-<time datetime="2013-12-28T16:28:00+05:30" pubdate><span class='month'>Dec</span> <span class='day'>28</span> <span class='year'>2013</span></time>
+<p>Let’s start with a very simple Machine Learning algorithm <strong>Linear Regression</strong>.</p>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/machinelearning/'>MachineLearning</a></span>
-</footer>
+<h2 id="linear-regression">Linear Regression</h2>
 
+<p>Linear Regression is an approach to the model the relationship between a <em>scalar dependent variable y</em> and <em>one or more indenpendent variable X</em>.</p>
 
-</article>
+<script type="math/tex; mode=display">
+\begin{align}
+y = \left [ \begin{array}{c}
+      y_1 \\
+      \vdots \\
+      y_n
+    \end{array}\right]    \hspace{10 mm}
+X = \left[ \begin{array}{cc}
+     X^1_1 \dots X^1_m \\
+     \vdots \ddots \vdots \\
+     X^n_1 \dots X^n_m
+     \end{array} \right]
+\end{align}
+</script>
 
+<p><em>n = number of samples</em><br />
+<em>m = number of features</em></p>
 
+<p>A linear regression model assumes that the relationship between the dependent variable $y_i$ and independent variable $X_i$.</p>
 
-<article>
-  
-<h1><a href="/blog/2013/12/27/building-a-custom-parser/">Building a custom Parser</a></h1>
-<time datetime="2013-12-27T10:08:00+05:30" pubdate><span class='month'>Dec</span> <span class='day'>27</span> <span class='year'>2013</span></time>
+<script type="math/tex; mode=display">
+\begin{align}
+y_i = a_0 + a_1*X^i_1 + a_2*X^i_2 + \dots + a_m*X^i_m
+\end{align}
+</script>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/datamining/'>DataMining,</a>, <a class='category' href='/blog/categories/lxml/'>LXML</a>, <a class='category' href='/blog/categories/parsing/'>Parsing,</a></span>
-</footer>
+<script type="math/tex; mode=display">
+\begin{align}
+y = \left[ \begin{array}{cc}1 \hspace{3 mm} X^1_1 \hspace{3 mm} \dots \hspace{3 mm} X^1_m \\
+		   1 \hspace{3 mm} X^2_1 \hspace{3 mm} \dots \hspace{3 mm}  X^2_m \\
+           \vdots \hspace{3 mm} \ddots \hspace{3 mm} \vdots \\
+           1 \hspace{3 mm} X^n_1 \hspace{3 mm} \dots \hspace{3 mm} X^n_m
+           \end{array} \right]
+    \left[ \begin{array}{c} a_0\\
+           a_1\\
+           \vdots \\
+           a_m
+           \end{array} \right]^T
+\end{align}
+</script>
 
+<p><em>a<sub>0</sub>, a<sub>1</sub>, …. , a<sub>m</sub></em> are some constants.</p>
 
-</article>
+<h4 id="linear-regression-with-one-variable-univariate">Linear Regression with One Variable (Univariate)</h4>
 
+<p>First we start with modelling a hypothesis $h_\theta(X)$.</p>
+
+<script type="math/tex; mode=display">
+\begin{align}
+h_\theta(X) = \theta_0 + \theta_1*X
+\end{align}
+</script>
+
+<p>The objective of linear regression is to correctly estimate the values of $\theta<em>0$ and $\theta</em>1$ such that $h_\theta(X)$ represents $y$.</p>
+
+<p>Linear Regression models are often fitted using <em>least squares</em> approach or by minimizing  a <em>penalized version of the least squares loss function</em>. </p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Abinash Panda</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-28T16:28:00+05:30" pubdate data-updated="true">Dec 28<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/machinelearning/'>MachineLearning</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://abinashpanda.github.io/blog/2013/12/28/introduction-to-machine-learning/" data-via="" data-counturl="http://abinashpanda.github.io/blog/2013/12/28/introduction-to-machine-learning/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/12/27/building-a-custom-parser/" title="Previous Post: Building a custom Parser">&laquo; Building a custom Parser</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -223,7 +333,10 @@ Dec 27 2013 posted in DataMining &hellip;">
       var disqus_shortname = 'pythonicmusings';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://abinashpanda.github.io/blog/2013/12/28/introduction-to-machine-learning/';
+        var disqus_url = 'http://abinashpanda.github.io/blog/2013/12/28/introduction-to-machine-learning/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
