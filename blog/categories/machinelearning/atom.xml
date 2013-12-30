@@ -4,7 +4,7 @@
   <title><![CDATA[Category: MachineLearning | Pythonic Musings]]></title>
   <link href="http://abinashpanda.github.io/blog/categories/machinelearning/atom.xml" rel="self"/>
   <link href="http://abinashpanda.github.io/"/>
-  <updated>2013-12-29T20:59:15+05:30</updated>
+  <updated>2013-12-30T19:51:17+05:30</updated>
   <id>http://abinashpanda.github.io/</id>
   <author>
     <name><![CDATA[Abinash Panda]]></name>
@@ -112,7 +112,7 @@ Replacing the values of <script type="math/tex">\frac{\partial J(\theta)}{\parti
 
 <script type="math/tex; mode=display">
 \begin{align}
-\frac{\partial J(\theta)}{\partial \theta_i} = \frac{1}{n}\sum_{j=1}^n(h_\theta(X^j) - y^j)X_i
+\frac{\partial J(\theta)}{\partial \theta_i} = \frac{1}{n}\sum_{j=1}^n(h_\theta(X^j) - y^j)X_i^j
 \end{align}
 </script>
 
