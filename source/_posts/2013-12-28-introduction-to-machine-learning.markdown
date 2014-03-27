@@ -102,7 +102,7 @@ Replacing the values of $$\frac{\partial J(\theta)}{\partial \theta_i}$$ as
 
 $$
 \begin{align}
-\frac{\partial J(\theta)}{\partial \theta_i} = \frac{1}{n}\sum_{j=1}^n(h_\theta(X^j) - y^j)X_i
+\frac{\partial J(\theta)}{\partial \theta_i} = \frac{1}{n}\sum_{j=1}^n(h_\theta(X^j) - y^j)X_i^j
 \end{align}
 $$
 
@@ -110,7 +110,7 @@ We can have a general formula for finding optimal value for any $$\theta_i$$ as:
 
 $$
 \begin{align}
-\theta_i := \theta_i - \alpha\frac{1}{n}\sum_{j=1}^n(h_\theta(X^j) - y^j)X_i
+\theta_i := \theta_i - \alpha\frac{1}{n}\sum_{j=1}^n(h_\theta(X^j) - y^j)X_i^j
 \end{align}
 $$
 
